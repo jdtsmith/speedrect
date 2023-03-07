@@ -60,3 +60,6 @@ Etc:
   [?] help      view this Help buffer
   [q] quit      exit rectangle-mark-mode"))
 ```
+
+## Thanks
+ Contributors of ideas from [this discussion](https://www.reddit.com/r/emacs/comments/11k9u73/a_tiny_modal_rectanglemarkmode/)
