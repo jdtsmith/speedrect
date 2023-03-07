@@ -5,7 +5,7 @@ SpeedRect is a small Emacs package that provides convenient "modal" key bindings
 
 ## Features
 
-- Bindings for all the basic rectangle functions: open, insert string, kill, delete, delete whitespace, clear, copy, yank.
+- [Bindings](#key-listing) for all the basic rectangle functions: open, insert string, kill, delete, delete whitespace, clear, copy, yank.
 - Restore the last saved rectangle position, or start a new rectangle from point. 
 - Calc grab and sum commands.
 - Column shift: slide a rectangle left or right, 1 or 5 columns at a time (or any number, with a prefix). 
