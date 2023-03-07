@@ -107,7 +107,7 @@ Note that point and mark will not move beyond the end of text on their lines."
   (with-help-window "Rectangle Mark Command Help"
     (dolist
 	(l '("SpeedRect Rectangle Mark Mode Commands\n"
-	     "============================================\n\n"
+	     "======================================================================\n\n"
 	     "Insertion:\n\n"
 	     "  [o] open      fill rectangle with spaces, moving adjacent text right\n"
 	     "  [t] string    replace rectangle with prompt string\n\n"
