@@ -41,6 +41,7 @@ Killing:
   [d] delete    kill rectangle without saving
   [SPC] del-ws  delete all whitespace, starting from left column
   [c] clear     clear rectangle area by overwriting with spaces
+  [r] rest      delete the rest of the lines, keeping the marked rectangle
 Change Rectangle:
   [n] new       start a new rectangle from this location
   [l] last      restore the last used rectangle position, if possible

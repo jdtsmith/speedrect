@@ -3,7 +3,7 @@
 
 ;; Author: JD Smith
 ;; Created: 2023
-;; Version: 0.1.1
+;; Version: 0.1.2
 ;; Package-Requires: ((emacs "25.1") (compat "29.1.4.0"))
 ;; Homepage: https://github.com/jdtsmith/speedrect
 ;; Keywords: convenience
@@ -101,10 +101,19 @@ Note that point and mark will not move beyond the end of text on their lines."
   (interactive "P")
   (speedrect-shift (- (or columns 5))))
 
+(defun speedrect-kill-rest (start end)
+  "Keep rectangle between START and END, removing the rest of the affected lines."
+  (interactive "r")
+  (speedrect-stash)
+  (let ((rect (extract-rectangle start end)))
+    (delete-region (progn (goto-char start) (line-beginning-position))
+		   (progn (goto-char end) (line-beginning-position 2)))
+    (insert-rectangle rect)))
+
 (defun speedrect-transient-map-info ()
   "Documentation window for speedrect."
   (interactive)
-  (with-help-window "Rectangle Mark Command Help"
+  (with-help-window "SpeedRect Command Key Help"
     (dolist
 	(l '("SpeedRect Rectangle Mark Mode Commands\n"
 	     "======================================================================\n\n"
@@ -115,7 +124,8 @@ Note that point and mark will not move beyond the end of text on their lines."
 	     "  [k] kill      kill and save rectangle for yanking\n"
 	     "  [d] delete    kill rectangle without saving\n"
 	     "  [SPC] del-ws  delete all whitespace, starting from left column\n"
-	     "  [c] clear     clear rectangle area by overwriting with spaces\n\n"
+	     "  [c] clear     clear rectangle area by overwriting with spaces\n"
+	     "  [r] rest      delete the rest of the lines, keeping the marked rectangle\n\n"
 	     "Change Rectangle:\n\n"
 	     "  [n] new       start a new rectangle from this location\n"
 	     "  [l] last      restore the last used rectangle position, if possible\n\n"
@@ -152,7 +162,7 @@ prior to deactivating mark."
      ("o" open-rectangle)   	("w" copy-rectangle-as-kill)
      ("y" yank-rectangle)   	("c" clear-rectangle)
      ("d" delete-rectangle) 	("N" rectangle-number-lines)
-     ("SPC" delete-whitespace-rectangle)
+     ("r" speedrect-kill-rest)  ("SPC" delete-whitespace-rectangle)
      ;; Shift rect
      ("S-<right>" speedrect-shift)
      ("S-<left>" speedrect-shift-left)
