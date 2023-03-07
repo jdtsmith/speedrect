@@ -58,7 +58,7 @@ Calc:
   [+] down      sum down the columns and grab result in calc
 Etc:
   [?] help      view this Help buffer
-  [q] quit      exit rectangle-mark-mode"))
+  [q] quit      exit rectangle-mark-mode
 ```
 
 ## Thanks
