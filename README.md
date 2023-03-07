@@ -44,7 +44,7 @@ Killing:
 Change Rectangle:
   [n] new       start a new rectangle from this location
   [l] last      restore the last used rectangle position, if possible
-Shift Rectangle (can use numeric prefixes)
+Shift Rectangle (can use numeric prefixes):
   [S-left]      move the rectangle left
   [S-right]     move the rectangle right
   [M-S-left]    move the rectangle left 5 columns
