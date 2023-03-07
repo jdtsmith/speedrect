@@ -60,9 +60,9 @@ Copy/Yank:
   [w] copy      copy rectangle for future yanking
   [y] yank      yank rectangle, inserting at point
 Calc:
-  [#] grab      grab the rectangle as a matrix in calc
-  [=] across    sum across rows and grab result in calc
-  [+] down      sum down the columns and grab result in calc
+  [#] grab      grab the rectangle as a matrix
+  [=] across    sum across rows and grab result
+  [+] down      sum down the columns and grab result
 Etc:
   [?] help      view this Help buffer
   [q] quit      exit rectangle-mark-mode
