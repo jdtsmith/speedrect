@@ -101,14 +101,14 @@ Note that point and mark will not move beyond the end of text on their lines."
   (interactive "P")
   (speedrect-shift (- (or columns 5))))
 
-(defun speedrect-kill-rest (start end)
-  "Keep rectangle between START and END, removing the rest of the affected lines."
+(defun speedrect-delete-rest (start end)
+  "Keep rectangle between START and END, deleting the rest of the affected lines."
   (interactive "r")
   (speedrect-stash)
   (let ((rect (extract-rectangle start end)))
     (delete-region (progn (goto-char start) (line-beginning-position))
-		   (progn (goto-char end) (line-beginning-position 2)))
-    (insert-rectangle rect)))
+		   (progn (goto-char end) (line-end-position)))
+    (insert (string-join rect "\n"))))
 
 (defun speedrect-transient-map-info ()
   "Documentation window for speedrect."
@@ -158,11 +158,11 @@ prior to deactivating mark."
   (cl-loop
    for (key def) in
    '(;; Rectangle basics
-     ("k" kill-rectangle)   	("t" string-rectangle)
-     ("o" open-rectangle)   	("w" copy-rectangle-as-kill)
-     ("y" yank-rectangle)   	("c" clear-rectangle)
-     ("d" delete-rectangle) 	("N" rectangle-number-lines)
-     ("r" speedrect-kill-rest)  ("SPC" delete-whitespace-rectangle)
+     ("k" kill-rectangle)   	 ("t" string-rectangle)
+     ("o" open-rectangle)   	 ("w" copy-rectangle-as-kill)
+     ("y" yank-rectangle)   	 ("c" clear-rectangle)
+     ("d" delete-rectangle) 	 ("N" rectangle-number-lines)
+     ("r" speedrect-delete-rest) ("SPC" delete-whitespace-rectangle)
      ;; Shift rect
      ("S-<right>" speedrect-shift)
      ("S-<left>" speedrect-shift-left)
