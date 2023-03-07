@@ -27,3 +27,36 @@ Start `rectangle-mark-mode` as usual (`C-x SPC`, by default).  Hit `?` to summon
 ## Hints
 
 A rectangle is just a _region_ (point and mark), specially interpreted.  While marking rectangles, you can `C-x C-x` to switch point and mark to make changes to the top/bottom of the selected region.
+
+## Key Listing
+
+```
+SpeedRect Rectangle Mark Mode Commands
+======================================================================
+Insertion:
+  [o] open      fill rectangle with spaces, moving adjacent text right
+  [t] string    replace rectangle with prompt string
+Killing:
+  [k] kill      kill and save rectangle for yanking
+  [d] delete    kill rectangle without saving
+  [SPC] del-ws  delete all whitespace, starting from left column
+  [c] clear     clear rectangle area by overwriting with spaces
+Change Rectangle:
+  [n] new       start a new rectangle from this location
+  [l] last      restore the last used rectangle position, if possible
+Shift Rectangle (can use numeric prefixes)
+  [S-left]      move the rectangle left
+  [S-right]     move the rectangle right
+  [M-S-left]    move the rectangle left 5 columns
+  [M-S-right]   move the rectangle right 5 columns
+Copy/Yank:
+  [w] copy      copy rectangle for future yanking
+  [y] yank      yank rectangle, inserting at point
+Calc:
+  [#] grab      grab the rectangle as a matrix in calc
+  [=] across    sum across rows and grab result in calc
+  [+] down      sum down the columns and grab result in calc
+Etc:
+  [?] help      view this Help buffer
+  [q] quit      exit rectangle-mark-mode"))
+```
