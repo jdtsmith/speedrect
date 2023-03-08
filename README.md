@@ -26,6 +26,12 @@ Just download, add to path, and arrange to `(require 'speedrect)`.  For users of
   :load-path "~/code/emacs/speedrect") ; or wherever
 ```
 
+Or, with `use-package` and `straight`:
+
+```elisp
+(use-package speedrect
+  :straight (speedrect :type git :host github :repo "jdtsmith/speedrect"))
+```
 ## Usage
 
 Start `rectangle-mark-mode` as usual (`C-x SPC`, by default).  Hit `?` to summon a help buffer of available key bindings.
