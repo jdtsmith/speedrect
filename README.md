@@ -67,9 +67,9 @@ Copy/Yank:
   [y] yank      yank rectangle, inserting at point
 Numerical:
   [N] numbers   fill the rectangle with numbers (prefix to set start)
-  [#] grab      grab the rectangle as a matrix
-  [=] across    sum across rows and grab result
-  [+] down      sum down the columns and grab result
+  [#] grab      grab the rectangle as a matrix in calc
+  [=] across    sum across rows and grab result in calc as a vector
+  [+] down      sum down the columns and grab result in calc
 Etc:
   [?] help      view this Help buffer
   [q] quit      exit rectangle-mark-mode
