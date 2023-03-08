@@ -44,7 +44,7 @@ A rectangle is just a _region_ (point and mark), specially interpreted.  While m
 
 ```
 SpeedRect Rectangle Mark Mode Commands
-======================================================================
+============================================================================
 Insertion:
   [o] open      fill rectangle with tabs/spaces, moving adjacent text right
   [t] string    replace rectangle with prompt string
