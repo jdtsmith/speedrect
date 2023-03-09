@@ -10,12 +10,12 @@ Quick key bindings and other tools for Emacs' `rectangle-mark-mode`.
 
 - [Bindings](#key-listing) for all the basic rectangle functions: open, insert string, kill, delete, clear, copy, yank.
 - Useful, but not default-bound rectangle command to delete all whitespace right.
-- Additional command to _invert the deletion_, i.e. delete the _unmarked columns_, keeping the marked rectangle.
-- Save and restore the last rectangle's position.
-- Start a new rectangle from point. 
-- Two-way interaction with Calc: send data or sums into calc, and yank matrix data into the buffer from the calc stack.
+- Additional command to _invert the deletion_, i.e. delete the _unmarked columns_, keeping only the marked rectangle on those lines.
+- Restore the last rectangle's position, which is auto-saved.
+- Change your minde and start a new rectangle from point. 
 - Column shift: slide the rectangle mark left or right, 1 or 5 columns at a time (or any number of columns, with a numerical prefix). 
-- A help page (hit `?`). 
+- Two-way interaction with Calc: send sums or tables of data into calc, and yank matrix data into the buffer from the calc stack.
+- A useful help page (hit `?`). 
 
 ## Installation
 
