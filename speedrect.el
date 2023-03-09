@@ -197,8 +197,8 @@ each side of the inserted text."
 	     "Numerical:\n\n"
 	     "  [N] numbers   fill the rectangle with numbers (prefix to set start)\n"
 	     "  [#] grab      grab the rectangle as a matrix in calc\n"
-	     "  [=] across    sum across rows and grab result in calc as a vector\n"
-	     "  [+] down      sum down the columns and grab result in calc\n\n"
+	     "  [_] across    sum across rows and grab result in calc as a vector\n"
+	     "  [:] down      sum down the columns and grab result in calc\n\n"
 	     "  [m] yank-mat  yank matrix from top of calc stack, overwriting selected rect\n\n"
 	     "Etc:\n\n"
 	     "  [?] help      view this Help buffer\n"
@@ -228,7 +228,7 @@ prior to deactivating mark."
      ("M-S-<right>" speedrect-shift-fast)
      ("M-S-<left>" speedrect-shift-left-fast)
      ;; Calc commands
-     ("=" calc-grab-sum-across) ("+" calc-grab-sum-down) ("#" calc-grab-rectangle)
+     ("_" calc-grab-sum-across) (":" calc-grab-sum-down) ("#" calc-grab-rectangle)
      ("m" speedrect-yank-from-calc)
      ;; Special
      ("n" speedrect-restart) ("l" speedrect-recall-last)

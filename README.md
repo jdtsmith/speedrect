@@ -85,8 +85,8 @@ Copy/Yank:
 Numerical:
   [N] numbers   fill the rectangle with numbers (prefix to set start)
   [#] grab      grab the rectangle as a matrix in calc
-  [=] across    sum across rows and grab result in calc as a vector
-  [+] down      sum down the columns and grab result in calc
+  [_] across    sum across rows and grab result in calc as a vector
+  [:] down      sum down the columns and grab result in calc
   [m] yank-mat  yank matrix from top of calc stack, overwriting selected rect
 Etc:
   [?] help      view this Help buffer
