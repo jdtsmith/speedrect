@@ -43,13 +43,13 @@ A rectangle is just a _region_ (point and mark), specially interpreted.  While m
 
 ## Using Calc
 
-[Calc](https://www.gnu.org/software/emacs/manual/html_mono/calc.html) is an ancient and powerful calculator in emacs with many capabilities.  In addition to simple sums, `SpeedRect` offers powerful two-way communication with calc:
+[Calc](https://www.gnu.org/software/emacs/manual/html_mono/calc.html) is an ancient and powerful calculator in emacs with many capabilities, including operating on _matrix_ data.  In addition to simple sums, `SpeedRect` offers powerful two-way communication with calc:
 
 1. It can send columns of numbers to calc as a _matrix_ (2D array of numbers).  Once in calc, you can operate on those numbers using a wide array of operations.  Many of these "just work" on matrices (e.g. `1 +` will add one to all the numbers).  Others can easily be mapped over matrix elements (try `v m`). 
 2. Once you have something you're happy with at the top of calc's *stack* (the entry number `1:`), you can:
-  - hit `q` to return to your buffer (where `rectangle-mark-mode` will still be active),
-  - adjust the position of your rectangle if needed (`S-left/right` is useful for this), and
-  - hit `m` to copy the top calc matrix over the top of the marked rectangle (first checking that it has the right number of rows).
+    - hit `q` to return to your buffer (where `rectangle-mark-mode` will still be active),
+    - adjust the position of your rectangle if needed (`S-left/right` is useful for this), and
+    - hit `m` to copy the top calc matrix over the top of the marked rectangle, if it has the right number of rows. 
 
 Note: what you see is what you get in calc.  `v [` and `v ,` will remove the brackets and commas.  `v >` will right align numbers.  `d f` will let you set the number of digits after the decimal.  And many more options.  
 
