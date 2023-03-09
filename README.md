@@ -47,7 +47,7 @@ Use calc, it's super-powerful:
 
 [Calc](https://www.gnu.org/software/emacs/manual/html_mono/calc.html) is an ancient and powerful calculator in emacs with many capabilities, including operating on [matrix data](https://www.gnu.org/software/emacs/manual/html_node/calc/Matrix-Tutorial.html).  In addition to simple sums, `SpeedRect` offers powerful two-way communication with calc for sending in and yanking out columns of numerical data:
 
-1. It can send columns of numbers to calc as a _matrix_ (2D array of numbers).  Once in calc, you can operate on those numbers using a wide array of operations.  Many things "just work" on matrices (e.g. `1 +` will add one to all the numbers).  Others can easily be mapped over matrix elements (try `v m`). You can combine columns, change their order, and much more.
+1. It can send columns of numbers to calc as a _matrix_ (2D array of numbers).  Once in calc, you can operate on those numbers using a wide array of operations.  Many things "just work" on matrices (e.g. `1 +` will add one to all the numbers).  Others can easily be mapped over matrix elements (try `v M`). You can combine columns, change their order, and much more.
 2. Once you have something you're happy with at the top of calc's *stack* (the entry numbered `1:`), you can:
     - hit `q` to return to your original buffer (where `rectangle-mark-mode` will still be active),
     - adjust the position of your rectangle if needed (`S-left/right` is useful for this; a zero-width rectangle is fine), and
