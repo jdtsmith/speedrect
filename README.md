@@ -51,9 +51,11 @@ Use calc, it's super-powerful:
 2. Once you have something you're happy with at the top of calc's *stack* (the entry numbered `1:`), you can:
     - hit `q` to return to your original buffer (where `rectangle-mark-mode` will still be active),
     - adjust the position of your rectangle if needed (`S-left/right` is useful for this; a zero-width rectangle is fine), and
-    - hit `m` to copy the top calc matrix over the top of the marked rectangle (if the matrix has the right number of rows).
+    - hit `m` to yank the matrix from calc into the buffer (if it has the right number of rows), replacing the marked rectangle.
 
-Note: what you see is what you get in calc.  `v [` and `v ,` will remove the brackets and commas.  `v >` will right align numbers.  `d f` will let you set the number of digits after the decimal.  And many more options.  
+You don't have to be in the same `mark-rectangle-mode` session to yank a matrix from calc.  As long as the height of your rectangle matches the number of matrix rows, it will just work.  So you can start in one buffer, accumulate a matrix, manipulate it, switch to another buffer, and yank it there.
+
+**Note**: what you see is what you get in calc.  The matrix will be yanked _exactly_ as it appears.  `v [` and `v ,` will remove the brackets and commas.  `v >` will right align numbers.  While `v .` is convenient for shortening long entries, undo it before yanking.  `d f` will let you set the number of digits after the decimal.  And many more options.  
 
 ## Key Listing
 
