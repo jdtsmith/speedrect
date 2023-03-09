@@ -112,11 +112,23 @@ Note that point and mark will not move beyond the end of text on their lines."
 		   (progn (goto-char end) (line-end-position)))
     (insert (string-join rect "\n"))))
 
-(defun speedrect--replace-with-rect (startcol endcol rect)
+(defun speedrect--replace-with-rect (startcol endcol rect &optional from to)
   "Insert RECT's 2nd element, replacing text between STARTCOL and ENDCOL.
-RECT's 2nd element is removed by side-effect."
+The element is removed from RECT by side effect.  FROM and TO are
+optional substring positions to insert."
   (delete-rectangle-line startcol endcol nil)
-  (insert (pop (cdr rect))))
+  (insert (substring (pop (cdr rect)) from to)))
+
+(defun speedrect--lr-space (rect)
+  "Compute and return the minimum number of flanking spaces.
+Returns a cons of the minimum number of space characters
+appearing on the left- and right-hand ends of all strings in
+RECT (a list of strings)."
+  (cl-loop for s in rect
+	   if (string-match "^\\( *\\)[^ ].*?\\( *\\)$" s)
+	   minimize (match-end 1) into left
+	   minimize (- (length s) (match-beginning 2)) into right
+	   finally return (cons left right)))
 
 (defun speedrect-yank-from-calc (start end)
   "Yank matrix from top of calc stack, overwriting the marked rectangle.
@@ -124,7 +136,8 @@ START and END are the interactively-defined region beginning and
 end.  The (matrix) value at the top of the calc stack is used,
 and must have the same number of rows as the height of the marked
 rectangle.  To avoid copying brackets and commas, v [ and v , may
-be used in calc."
+be used in calc.  A minimum of one padding space is preserved on
+each side of the inserted text."
   (interactive "r")
   (if-let ((rectangle-mark-mode)
 	   (buf (get-buffer "*Calculator*")))
@@ -132,19 +145,23 @@ be used in calc."
 	     (e (region-end))
 	     (height (+ (count-lines b e)
 			(if (eq (char-before e) ?\n) 1 0)))
-	     crect)
+	     crect lr)
 	(save-excursion
 	  (with-current-buffer buf
 	    (let* ((cstart (progn (calc-cursor-stack-index 1)
-				  (if (looking-at (if calc-line-numbering "[0-9]+: *[^ \n]" " *[^ \n]"))
-				      (1- (match-end 0))
+				  (if (and calc-line-numbering (looking-at "[0-9]+: "))
+				      (match-end 0)
 				    (point))))
 		   (cend (progn (calc-cursor-stack-index 0) (line-end-position 0))))
 	      (setq crect (extract-rectangle cstart cend))))
 	  (if (eq (length crect) height)
 	      (progn
+		(setq lr (speedrect--lr-space crect))
 		(push nil crect) ; dummy, for consuming in apply-on-rectangle
-		(apply-on-rectangle 'speedrect--replace-with-rect start end crect)
+		(apply-on-rectangle 'speedrect--replace-with-rect
+				    start end crect
+				    (max 0 (1- (car lr)))
+				    (min 0 (- (1- (cdr lr)))))
 		(speedrect-stash))
 	    (user-error "Row count of calc matrix (%d) does not match rectangle height (%d)"
 			(length crect) height))))
