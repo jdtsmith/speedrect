@@ -13,8 +13,8 @@ SpeedRect is a small Emacs package that provides convenient "modal" key bindings
 - Additional command to _invert the deletion_, i.e. delete the _unmarked columns_, keeping the marked rectangle.
 - Save and restore the last rectangle's position.
 - Start a new rectangle from point. 
-- Calc grab and sum commands.
-- Column shift: slide a rectangle left or right, 1 or 5 columns at a time (or any number, with a prefix). 
+- Two-way interaction with Calc: grab, sum, and yank matrix from top of calc stack.
+- Column shift: slide a rectangle left or right, 1 or 5 columns at a time (or any number of columns, with a numerical prefix). 
 - A help page (hit `?`). 
 
 ## Installation
@@ -70,6 +70,7 @@ Numerical:
   [#] grab      grab the rectangle as a matrix in calc
   [=] across    sum across rows and grab result in calc as a vector
   [+] down      sum down the columns and grab result in calc
+  [m] yank-mat  yank matrix from top of calc stack, overwriting selected rect
 Etc:
   [?] help      view this Help buffer
   [q] quit      exit rectangle-mark-mode

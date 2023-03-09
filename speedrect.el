@@ -3,7 +3,7 @@
 
 ;; Author: JD Smith
 ;; Created: 2023
-;; Version: 0.1.2
+;; Version: 0.2.0
 ;; Package-Requires: ((emacs "25.1") (compat "29.1.4.0"))
 ;; Homepage: https://github.com/jdtsmith/speedrect
 ;; Keywords: convenience
@@ -32,6 +32,8 @@
 
 ;;; Code:
 (require 'rect)
+(require 'calc)
+(require 'subr-x)
 (require 'compat)
 (eval-when-compile (require 'cl-lib))
 
@@ -110,6 +112,44 @@ Note that point and mark will not move beyond the end of text on their lines."
 		   (progn (goto-char end) (line-end-position)))
     (insert (string-join rect "\n"))))
 
+(defun speedrect--replace-with-rect (startcol endcol rect)
+  "Insert RECT's 2nd element, replacing text between STARTCOL and ENDCOL.
+RECT's 2nd element is removed by side-effect."
+  (delete-rectangle-line startcol endcol nil)
+  (insert (pop (cdr rect))))
+
+(defun speedrect-yank-from-calc (start end)
+  "Yank matrix from top of calc stack, overwriting the marked rectangle.
+START and END are the interactively-defined region beginning and
+end.  The (matrix) value at the top of the calc stack is used,
+and must have the same number of rows as the height of the marked
+rectangle.  To avoid copying brackets and commas, v [ and v , may
+be used in calc."
+  (interactive "r")
+  (if-let ((rectangle-mark-mode)
+	   (buf (get-buffer "*Calculator*")))
+      (let* ((b (region-beginning))
+	     (e (region-end))
+	     (height (+ (count-lines b e)
+			(if (eq (char-before e) ?\n) 1 0)))
+	     crect)
+	(save-excursion
+	  (with-current-buffer buf
+	    (let* ((cstart (progn (calc-cursor-stack-index 1)
+				  (if (looking-at (if calc-line-numbering "[0-9]+: *[^ \n]" " *[^ \n]"))
+				      (1- (match-end 0))
+				    (point))))
+		   (cend (progn (calc-cursor-stack-index 0) (line-end-position 0))))
+	      (setq crect (extract-rectangle cstart cend))))
+	  (if (eq (length crect) height)
+	      (progn
+		(push nil crect) ; dummy, for consuming in apply-on-rectangle
+		(apply-on-rectangle 'speedrect--replace-with-rect start end crect)
+		(speedrect-stash))
+	    (user-error "Row count of calc matrix (%d) does not match rectangle height (%d)"
+			(length crect) height))))
+    (user-error "Calc rectangle yank not possible here")))
+
 (defun speedrect-transient-map-info ()
   "Documentation window for speedrect."
   (interactive)
@@ -142,6 +182,7 @@ Note that point and mark will not move beyond the end of text on their lines."
 	     "  [#] grab      grab the rectangle as a matrix in calc\n"
 	     "  [=] across    sum across rows and grab result in calc as a vector\n"
 	     "  [+] down      sum down the columns and grab result in calc\n\n"
+	     "  [m] yank-mat  yank matrix from top of calc stack, overwriting selected rect\n\n"
 	     "Etc:\n\n"
 	     "  [?] help      view this Help buffer\n"
 	     "  [q] quit      exit rectangle-mark-mode"))
@@ -171,6 +212,7 @@ prior to deactivating mark."
      ("M-S-<left>" speedrect-shift-left-fast)
      ;; Calc commands
      ("=" calc-grab-sum-across) ("+" calc-grab-sum-down) ("#" calc-grab-rectangle)
+     ("m" speedrect-yank-from-calc)
      ;; Special
      ("n" speedrect-restart) ("l" speedrect-recall-last)
      ("?" speedrect-transient-map-info) ("q" speedrect-quit))
