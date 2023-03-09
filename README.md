@@ -8,8 +8,8 @@ Quick key bindings and other tools for Emacs' `rectangle-mark-mode`.
 
 ## Features
 
-- [Bindings](#key-listing) for all the basic rectangle functions: open, insert string, kill, delete, clear, copy, yank.
-- Useful, but by default unbound command to delete whitespace from the rectangle rightwards.
+- Single-key [bindings](#key-listing) for all the basic rectangle functions: open, insert string, kill, delete, clear, copy, yank.
+- Exposes useful unbound command to delete whitespace from the rectangle rightwards.
 - Additional command to _invert the deletion_, i.e. delete the _unmarked columns_, keeping only the marked rectangle on those lines.
 - Ability to restore the last rectangle's position, which gets auto-saved.
 - Change your mind and start a new rectangle from point. 
