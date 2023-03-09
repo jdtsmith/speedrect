@@ -4,7 +4,7 @@
 
 Quick key bindings and other tools for Emacs' `rectangle-mark-mode`.
 
-SpeedRect is a small Emacs package that provides convenient "modal" key bindings and other tools while in `rectangle-mark-mode` (`C-x SPC`, by default).
+`SpeedRect` is a small Emacs package that provides convenient "modal" key bindings and other tools while in `rectangle-mark-mode` (`C-x SPC`, by default).
 
 ## Features
 
@@ -39,17 +39,19 @@ Start `rectangle-mark-mode` as usual (`C-x SPC`, by default).  Hit `?` to summon
 
 ## Hints
 
-A rectangle is just a _region_ (point and mark), specially interpreted.  While marking rectangles, you can `C-x C-x` to switch point and mark to make changes to the top/bottom of the selected region.
+A rectangle is just a _region_ (point and mark), specially interpreted.  While marking rectangles, you can `C-x C-x` to switch point and mark to make changes to the top/bottom of the selected region (hit it yet again to switch to the other diagonal).
 
-## Using Calc
+Use calc, it's super-powerful:
 
-[Calc](https://www.gnu.org/software/emacs/manual/html_mono/calc.html) is an ancient and powerful calculator in emacs with many capabilities, including operating on _matrix_ data.  In addition to simple sums, `SpeedRect` offers powerful two-way communication with calc:
+### Using Calc
 
-1. It can send columns of numbers to calc as a _matrix_ (2D array of numbers).  Once in calc, you can operate on those numbers using a wide array of operations.  Many of these "just work" on matrices (e.g. `1 +` will add one to all the numbers).  Others can easily be mapped over matrix elements (try `v m`). 
-2. Once you have something you're happy with at the top of calc's *stack* (the entry number `1:`), you can:
-    - hit `q` to return to your buffer (where `rectangle-mark-mode` will still be active),
-    - adjust the position of your rectangle if needed (`S-left/right` is useful for this), and
-    - hit `m` to copy the top calc matrix over the top of the marked rectangle, if it has the right number of rows. 
+[Calc](https://www.gnu.org/software/emacs/manual/html_mono/calc.html) is an ancient and powerful calculator in emacs with many capabilities, including operating on [matrix data](https://www.gnu.org/software/emacs/manual/html_node/calc/Matrix-Tutorial.html).  In addition to simple sums, `SpeedRect` offers powerful two-way communication with calc for sending in and yanking out columns of numerical data:
+
+1. It can send columns of numbers to calc as a _matrix_ (2D array of numbers).  Once in calc, you can operate on those numbers using a wide array of operations.  Many things "just work" on matrices (e.g. `1 +` will add one to all the numbers).  Others can easily be mapped over matrix elements (try `v m`). You can combine columns, change their order, and much more.
+2. Once you have something you're happy with at the top of calc's *stack* (the entry numbered `1:`), you can:
+    - hit `q` to return to your original buffer (where `rectangle-mark-mode` will still be active),
+    - adjust the position of your rectangle if needed (`S-left/right` is useful for this; a zero-width rectangle is fine), and
+    - hit `m` to copy the top calc matrix over the top of the marked rectangle (if the matrix has the right number of rows).
 
 Note: what you see is what you get in calc.  `v [` and `v ,` will remove the brackets and commas.  `v >` will right align numbers.  `d f` will let you set the number of digits after the decimal.  And many more options.  
 
