@@ -75,7 +75,7 @@ rect and exit `rectangle-mark-mode'."
   (interactive)
   (set-mark (point)))
 
-(defun speedrect-shift (columns)
+(defun speedrect-shift-right (columns)
   "Shift the current speedrect by COLUMNS (negative to the left, default 1).
 Note that point and mark will not move beyond the end of text on their lines."
   (interactive "P")
@@ -83,25 +83,54 @@ Note that point and mark will not move beyond the end of text on their lines."
 	(pcol (current-column))
 	(columns (or columns 1))
 	(mcol (progn (goto-char (mark)) (current-column))))
-    (move-to-column (+ mcol columns))
+    (move-to-column (max 0 (+ mcol columns)))
     (set-mark (point))
     (goto-char p)
-    (move-to-column (+ pcol columns))))
+    (move-to-column (max 0 (+ pcol columns)))))
 
-(defun speedrect-shift-fast (columns)
+(defun speedrect-shift-right-fast (columns)
   "Shift the current speedrect left by COLUMNS (default 5)."
   (interactive "P")
-  (speedrect-shift (or columns 5)))
+  (speedrect-shift-right (or columns 5)))
 
 (defun speedrect-shift-left (columns)
   "Shift the current speedrect left by COLUMNS (default 1)."
   (interactive "P")
-  (speedrect-shift (- (or columns 1))))
+  (speedrect-shift-right (- (or columns 1))))
 
 (defun speedrect-shift-left-fast (columns)
   "Shift the current speedrect left by COLUMNS (default 5)."
   (interactive "P")
-  (speedrect-shift (- (or columns 5))))
+  (speedrect-shift-right (- (or columns 5))))
+
+(defun speedrect-shift-down (lines)
+  "Shift rectangle down by LINES."
+  (interactive "P")
+  (let ((p (point))
+	(pcol (current-column))
+	(lines (or lines 1))
+	(mcol (progn (goto-char (mark)) (current-column))))
+    (forward-line lines)
+    (move-to-column mcol)
+    (set-mark (point))
+    (goto-char p)
+    (forward-line lines)
+    (move-to-column pcol)))
+
+(defun speedrect-shift-down-fast (lines)
+  "Shift the current speedrect down by LINES (default 5)."
+  (interactive "P")
+  (speedrect-shift-down (or lines 5)))
+
+(defun speedrect-shift-up (lines)
+  "Shift the current speedrect up by LINES (default 1)."
+  (interactive "P")
+  (speedrect-shift-down (- (or lines 1))))
+
+(defun speedrect-shift-up-fast (lines)
+  "Shift the current speedrect up by LINES (default 5)."
+  (interactive "P")
+  (speedrect-shift-down (- (or lines 5))))
 
 (defun speedrect-delete-rest (start end)
   "Keep rectangle between START and END, deleting the rest of the affected lines."
@@ -189,8 +218,12 @@ each side of the inserted text."
 	     "Shift Rectangle (can use numeric prefixes):\n\n"
 	     "  [S-left]      move the rectangle left\n"
 	     "  [S-right]     move the rectangle right\n"
+	     "  [S-up]        move the rectangle up\n"
+	     "  [S-down]      move the rectangle down\n"
 	     "  [M-S-left]    move the rectangle left 5 columns\n"
-	     "  [M-S-right]   move the rectangle right 5 columns\n\n"
+	     "  [M-S-right]   move the rectangle right 5 columns\n"
+	     "  [M-S-up]      move the rectangle up 5 columns\n"
+	     "  [M-S-down]    move the rectangle down 5 lines\n\n"
 	     "Copy/Yank:\n\n"
 	     "  [w] copy      copy rectangle for future yanking\n"
 	     "  [y] yank      yank rectangle, inserting at point\n\n"
@@ -223,10 +256,14 @@ prior to deactivating mark."
      ("d" delete-rectangle) 	 ("N" rectangle-number-lines)
      ("r" speedrect-delete-rest) ("SPC" delete-whitespace-rectangle)
      ;; Shift rect
-     ("S-<right>" speedrect-shift)
+     ("S-<right>" speedrect-shift-right)
      ("S-<left>" speedrect-shift-left)
-     ("M-S-<right>" speedrect-shift-fast)
+     ("M-S-<right>" speedrect-shift-right-fast)
      ("M-S-<left>" speedrect-shift-left-fast)
+     ("S-<up>" speedrect-shift-up)
+     ("S-<down>" speedrect-shift-down)
+     ("M-S-<up>" speedrect-shift-up-fast)
+     ("M-S-<down>" speedrect-shift-down-fast)
      ;; Calc commands
      ("_" calc-grab-sum-across) (":" calc-grab-sum-down) ("#" calc-grab-rectangle)
      ("m" speedrect-yank-from-calc)
