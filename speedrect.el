@@ -80,13 +80,11 @@ rect and exit `rectangle-mark-mode'."
 Note that point and mark will not move beyond the end of text on their lines."
   (interactive "P")
   (let ((p (point))
-	(pcol (current-column))
-	(columns (or columns 1))
-	(mcol (progn (goto-char (mark)) (current-column))))
-    (move-to-column (max 0 (+ mcol columns)))
+	(columns (or columns 1)))
+    (rectangle-right-char columns)
     (set-mark (point))
     (goto-char p)
-    (move-to-column (max 0 (+ pcol columns)))))
+    (rectangle-right-char columns)))
 
 (defun speedrect-shift-right-fast (columns)
   "Shift the current speedrect left by COLUMNS (default 5)."
@@ -107,15 +105,12 @@ Note that point and mark will not move beyond the end of text on their lines."
   "Shift rectangle down by LINES."
   (interactive "P")
   (let ((p (point))
-	(pcol (current-column))
-	(lines (or lines 1))
-	(mcol (progn (goto-char (mark)) (current-column))))
-    (forward-line lines)
-    (move-to-column mcol)
+	(lines (or lines 1)))
+    (goto-char (mark))
+    (rectangle-next-line lines)
     (set-mark (point))
     (goto-char p)
-    (forward-line lines)
-    (move-to-column pcol)))
+    (rectangle-next-line lines)))
 
 (defun speedrect-shift-down-fast (lines)
   "Shift the current speedrect down by LINES (default 5)."
