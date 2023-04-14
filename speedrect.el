@@ -3,7 +3,7 @@
 
 ;; Author: JD Smith
 ;; Created: 2023
-;; Version: 0.2.1
+;; Version: 0.2.2
 ;; Package-Requires: ((emacs "25.1") (compat "29.1.4.0"))
 ;; Homepage: https://github.com/jdtsmith/speedrect
 ;; Keywords: convenience
@@ -75,16 +75,20 @@ rect and exit `rectangle-mark-mode'."
   (interactive)
   (set-mark (point)))
 
+(defsubst speedrect-right-char (columns)
+  "Move COLUMNS right unless COLUMNS<0 and at left edge."
+  (unless (and (eq (current-column) 0) (< columns 0))
+    (rectangle-right-char columns)))
+
 (defun speedrect-shift-right (columns)
   "Shift the current speedrect by COLUMNS (negative to the left, default 1).
 Note that point and mark will not move beyond the end of text on their lines."
   (interactive "P")
-  (let ((p (point))
-	(columns (or columns 1)))
-    (rectangle-right-char columns)
-    (set-mark (point))
-    (goto-char p)
-    (rectangle-right-char columns)))
+  (let ((columns (or columns 1)))
+    (speedrect-right-char columns)
+    (exchange-point-and-mark)
+    (speedrect-right-char columns)
+    (exchange-point-and-mark)))
 
 (defun speedrect-shift-right-fast (columns)
   "Shift the current speedrect left by COLUMNS (default 5)."
