@@ -135,6 +135,12 @@ Note that point and mark will not move beyond the end of text on their lines."
   (interactive "P")
   (speedrect-shift-down (- (or lines 5))))
 
+(defun speedrect-yank-rectangle-dwim ()
+  "Yank rectangle, but first swap mark and point if needed."
+  (interactive)
+  (if (< (mark) (point)) (exchange-point-and-mark))
+  (call-interactively #'yank-rectangle))
+
 (defun speedrect-delete-rest (start end)
   "Keep rectangle between START and END, deleting the rest of the affected lines."
   (interactive "r")
@@ -274,7 +280,7 @@ prior to deactivating mark."
    '(;; Rectangle basics
      ("k" kill-rectangle after)    ("t" string-rectangle after)
      ("o" open-rectangle t)   	   ("w" copy-rectangle-as-kill t)
-     ("y" yank-rectangle t)   	   ("c" clear-rectangle t)
+     ("y" speedrect-yank-rectangle-dwim t) ("c" clear-rectangle t)
      ("d" delete-rectangle after)  ("N" rectangle-number-lines t)
      ("r" speedrect-delete-rest t) ("SPC" delete-whitespace-rectangle t)
      ;; Shift rect
@@ -288,7 +294,7 @@ prior to deactivating mark."
      ("M-S-<down>" speedrect-shift-down-fast)
      ;; Calc commands
      ("_" calc-grab-sum-across) (":" calc-grab-sum-down) ("#" calc-grab-rectangle)
-     ("m" speedrect-yank-from-calc t)
+     ("m" speedrect-yank-from-calc after)
      ;; Special
      ("n" speedrect-restart) ("l" speedrect-recall-last)
      ("?" speedrect-transient-map-info) ("q" speedrect-quit))
