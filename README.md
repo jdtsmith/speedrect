@@ -48,15 +48,15 @@ Use calc, it's super-powerful:
 
 [Calc](https://www.gnu.org/software/emacs/manual/html_mono/calc.html) is an ancient and powerful calculator in emacs with many capabilities, including operating on [matrix data](https://www.gnu.org/software/emacs/manual/html_node/calc/Matrix-Tutorial.html).  In addition to simple sums, `SpeedRect` offers powerful two-way communication with calc for sending in and yanking out columns of numerical data:
 
-1. It can send columns of numbers to calc as a _matrix_ (2D array of numbers).  Once in calc, you can operate on those numbers using a wide array of operations.  Many things "just work" on matrices (e.g. `1 +` will add one to all the numbers).  Others can easily be mapped over matrix elements (e.g. try `v M Q` to map `sqrt` over all ements). You can combine columns, change their order, and _much_ more.
-2. Once you have something you're happy with at the top of calc's *stack* (the bottom, entry numbered `1:`), you can:
+1. It can send columns of numbers to calc as a _matrix_ (2D array of numbers).  Once in calc, you can operate on those numbers using a wide array of operations.  Many things "just work" on matrices (e.g. `1 +` will add one to all the numbers).  Others can easily be mapped over matrix elements (e.g. try `v M Q` to map `sqrt` over all elements). You can combine columns, change their order, and _much_ more.
+2. Once you have something you're happy with at the top of calc's *stack* (at the bottom of the `*Calculator*` buffer, entry numbered `1:`), you can:
     - hit `q` (or other window navigation) to return to your original buffer (where `rectangle-mark-mode` will still be active),
-    - adjust the position of your rectangle if needed (`S-left/right` is useful for this; a zero-width rectangle is fine), and
-    - hit `m` to yank the matrix from calc into the buffer (if it has the right number of rows), replacing the marked rectangle.
+    - adjust the position of your rectangle if needed (`S-left/right` and/or `C-x C-x` is useful for this; a zero-width rectangle is fine), and
+    - hit `m` to yank the latest matrix from calc into the buffer (if it has the right number of rows), replacing the marked rectangle.
 
 You don't have to be in the same `mark-rectangle-mode` session to yank a matrix from calc.  As long as the height of your rectangle matches the number of matrix rows, it will just work.  So you can start in one buffer, accumulate a matrix, manipulate it, switch to another buffer, and yank it there.
 
-**Note**: what you see is what you get in calc.  The matrix will be yanked _exactly_ as it appears.  `v [` and `v ,` will remove the brackets and commas for a cleaner appearance.  `v >` will right align numbers.  While `v .` is convenient for shortening long entries, undo it before yanking.  `d f` will let you set the number of digits after the decimal.  And many more options.
+**Note**: what you see is what you get in calc.  The matrix will be yanked _exactly_ as it appears.  `v [` and `v ,` will remove the brackets and commas for a cleaner appearance.  `v >` will right align numbers.  While `v .` is convenient for shortening long entries, you must undo it before yanking.  `d f` will let you set the number of digits after the decimal.  And many more options.
 
 ## Key Listing
 
