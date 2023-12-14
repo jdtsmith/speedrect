@@ -37,6 +37,11 @@
 (require 'compat)
 (eval-when-compile (require 'cl-lib))
 
+(defcustom speedrect-continue t
+  "Stay in speedrect until quit."
+  :type 'boolean
+  :group 'rectangle)
+
 (defun speedrect-linecol ()
   "Return line and column as list."
   (list (line-number-at-pos) (current-column)))
@@ -45,16 +50,14 @@
   "Last rectangle position.
 Stored as (point-line point-col mark-line mark-col)")
 
-(defun speedrect-stash (&rest _r)
-  "Stash the line and column of point and mark.
-Used as :before advice for commands which operate on the marked
-rect and exit `rectangle-mark-mode'."
-  (if rectangle-mark-mode
-      (setq speedrect-last
-	    (append (speedrect-linecol)
-		    (save-excursion
-		      (goto-char (mark))
-		      (speedrect-linecol))))))
+(defun speedrect-stash ()
+  "Stash the line and column of point and mark."
+  (when rectangle-mark-mode
+    (setq speedrect-last
+	  (append (speedrect-linecol)
+		  (save-excursion
+		    (goto-char (mark))
+		    (speedrect-linecol))))))
 
 (defun speedrect-recall-last ()
   "Restore last saved rectangle position."
@@ -67,7 +70,8 @@ rect and exit `rectangle-mark-mode'."
      (set-mark (point))
      (forward-line (- pl ml))
      (move-to-column pc)
-     (message "Restored last rectangle %d %d, %d %d" ml mc pl pc))
+     (if (called-interactively-p 'interactive)
+	 (message "Restored last rectangle %d %d, %d %d" ml mc pl pc)))
     (_ (message "No stored rectangle position"))))
 
 (defun speedrect-restart ()
@@ -134,7 +138,6 @@ Note that point and mark will not move beyond the end of text on their lines."
 (defun speedrect-delete-rest (start end)
   "Keep rectangle between START and END, deleting the rest of the affected lines."
   (interactive "r")
-  (speedrect-stash)
   (let ((rect (extract-rectangle start end)))
     (delete-region (progn (goto-char start) (line-beginning-position))
 		   (progn (goto-char end) (line-end-position)))
@@ -189,8 +192,7 @@ each side of the inserted text."
 		(apply-on-rectangle 'speedrect--replace-with-rect
 				    start end crect
 				    (max 0 (1- (car lr)))
-				    (min 0 (- (1- (cdr lr)))))
-		(speedrect-stash))
+				    (min 0 (- (1- (cdr lr))))))
 	    (user-error "Row count of calc matrix (%d) does not match rectangle height (%d)"
 			(length crect) height))))
     (user-error "Calc rectangle yank not possible here")))
@@ -242,18 +244,39 @@ each side of the inserted text."
   (interactive)
   (deactivate-mark))
 
+(defun speedrect--wrap-command
+     (command &optional after)
+  "Wrap an interactive COMMAND to store rect and (posibly) reenter.
+Many/most rectangle commands deactivate mark and exit
+`rectangle-mark-mode'.  This ensure the rectangle is stashed
+before such commands, and, if custom option `speedrect-continue'
+is non-nil, restarts with the same rectangle.  If AFTER is
+non-nil, stash the rectangle after the command runs."
+  (lambda ()
+    (interactive)
+    (unless after (speedrect-stash))
+    (call-interactively command)
+    (when after (speedrect-stash))
+    (when speedrect-continue
+      (run-at-time 0 nil
+		   (lambda ()
+		     (let ((rectangle-mark-mode-hook nil))
+		       (activate-mark)
+		       (rectangle-mark-mode 1)
+		       (speedrect-recall-last)))))))
+
 (defun speedrect-create-bindings ()
   "Create the bindings for speedrect.
 Also adds :before advice to rectangle commands to stash the rect
 prior to deactivating mark."
   (cl-loop
-   for (key def) in
+   for (key def wrap) in
    '(;; Rectangle basics
-     ("k" kill-rectangle)   	 ("t" string-rectangle)
-     ("o" open-rectangle)   	 ("w" copy-rectangle-as-kill)
-     ("y" yank-rectangle)   	 ("c" clear-rectangle)
-     ("d" delete-rectangle) 	 ("N" rectangle-number-lines)
-     ("r" speedrect-delete-rest) ("SPC" delete-whitespace-rectangle)
+     ("k" kill-rectangle after)    ("t" string-rectangle after)
+     ("o" open-rectangle t)   	   ("w" copy-rectangle-as-kill t)
+     ("y" yank-rectangle t)   	   ("c" clear-rectangle t)
+     ("d" delete-rectangle after)  ("N" rectangle-number-lines t)
+     ("r" speedrect-delete-rest t) ("SPC" delete-whitespace-rectangle t)
      ;; Shift rect
      ("S-<right>" speedrect-shift-right)
      ("S-<left>" speedrect-shift-left)
@@ -265,24 +288,18 @@ prior to deactivating mark."
      ("M-S-<down>" speedrect-shift-down-fast)
      ;; Calc commands
      ("_" calc-grab-sum-across) (":" calc-grab-sum-down) ("#" calc-grab-rectangle)
-     ("m" speedrect-yank-from-calc)
+     ("m" speedrect-yank-from-calc t)
      ;; Special
      ("n" speedrect-restart) ("l" speedrect-recall-last)
      ("?" speedrect-transient-map-info) ("q" speedrect-quit))
-   for dname = (symbol-name def)
-   do
-   (define-key rectangle-mark-mode-map (kbd key) def)
-   (unless (seq-some (lambda (name)
-		       (string-prefix-p name dname))
-		     '("speedrect" "calc"))
-     (advice-add def :before #'speedrect-stash)))
+   for bind = (if wrap (speedrect--wrap-command def (eq wrap 'after)) def)
+   do (define-key rectangle-mark-mode-map (kbd key) bind))
   (put 'rectangle-mark-mode-map 'speedrect t))
 
 (defun speedrect-hook ()
   "Setup speedrect for `rectangle-mark-mode'."
   (when rectangle-mark-mode
-    (unless (get 'rectangle-mark-mode-map 'speedrect)
-      (speedrect-create-bindings))
+    (speedrect-create-bindings)
     (message "%s: [?] for help%s"
 	     (propertize "SpeedRect" 'face 'success)
 	     (if speedrect-last
