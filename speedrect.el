@@ -183,24 +183,23 @@ each side of the inserted text."
 	     (height (+ (count-lines b e)
 			(if (eq (char-before e) ?\n) 1 0)))
 	     crect lr)
-	(save-excursion
-	  (with-current-buffer buf
-	    (let* ((cstart (progn (calc-cursor-stack-index 1)
-				  (if (and calc-line-numbering (looking-at "[0-9]+: "))
-				      (match-end 0)
-				    (point))))
-		   (cend (progn (calc-cursor-stack-index 0) (line-end-position 0))))
-	      (setq crect (extract-rectangle cstart cend))))
-	  (if (eq (length crect) height)
-	      (progn
-		(setq lr (speedrect--lr-space crect))
-		(push nil crect) ; dummy, for consuming in apply-on-rectangle
-		(apply-on-rectangle 'speedrect--replace-with-rect
-				    start end crect
-				    (max 0 (1- (car lr)))
-				    (min 0 (- (1- (cdr lr))))))
-	    (user-error "Row count of calc matrix (%d) does not match rectangle height (%d)"
-			(length crect) height))))
+	(with-current-buffer buf
+	  (let* ((cstart (progn (calc-cursor-stack-index 1)
+				(if (and calc-line-numbering (looking-at "[0-9]+: "))
+				    (match-end 0)
+				  (point))))
+		 (cend (progn (calc-cursor-stack-index 0) (line-end-position 0))))
+	    (setq crect (extract-rectangle cstart cend))))
+	(if (eq (length crect) height)
+	    (progn
+	      (setq lr (speedrect--lr-space crect))
+	      (push nil crect) ; dummy, for consuming in apply-on-rectangle
+	      (apply-on-rectangle 'speedrect--replace-with-rect
+				  start end crect
+				  (max 0 (1- (car lr)))
+				  (min 0 (- (1- (cdr lr))))))
+	  (user-error "Row count of calc matrix (%d) does not match rectangle height (%d)"
+		      (length crect) height)))
     (user-error "Calc rectangle yank not possible here")))
 
 (defun speedrect-transient-map-info ()
