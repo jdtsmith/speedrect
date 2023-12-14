@@ -9,12 +9,13 @@ Quick key bindings and other tools for Emacs' `rectangle-mark-mode`.
 ## Features
 
 - Single-key [bindings](#key-listing) for all the basic rectangle functions: open, insert string, kill, delete, clear, copy, yank.
-- Exposes useful unbound command to delete whitespace from the rectangle rightwards.
+- Restarts by default, so you can continue rectangle actions.
 - Additional command to _invert the deletion_, i.e. delete the _unmarked columns_, keeping only the marked rectangle on those lines.
 - Ability to restore the last rectangle's position, which gets auto-saved.
 - Change your mind and start a new rectangle from point. 
-- Column shift: slide the marked rectangle position left or right, 1 or 5 columns at a time (or any number of columns, with a numerical prefix). 
-- Two-way interaction with Calc: send sums or tables of data into calc, and yank processed matrix data into the buffer from the calc stack.
+- Exposes useful unbound command to delete whitespace from the rectangle start rightwards.
+- Column shift: slide the marked rectangle position left or right, 1 (hold shift) or 5 (meta-shift) columns at a time (or any number of columns, with a numerical prefix). 
+- Two-way interaction with Calc: send sums or tables of data into calc, and yank processed matrix data into the buffer from the top of calc's stack.
 - A useful help page (hit `?`). 
 
 ## Installation
@@ -34,12 +35,12 @@ Or, with `use-package` and `straight`:
 ```
 ## Usage
 
-Start `rectangle-mark-mode` as usual (`C-x SPC`, by default).  Hit `?` to summon a help buffer of available key bindings.
+Start `rectangle-mark-mode` as usual (`C-x SPC`, by default).  Hit `?` to summon a help buffer of available key bindings.  By default most commands restart `rectangle-mark-mode`; `q` (or any other non-shortcut command) to exit.  If you'd prefer speedrect commands not to continue in this way, set `speedrect-continue=nil`.
 
 
 ## Hints
 
-A rectangle is just a _region_ (point and mark), specially interpreted.  While marking rectangles, you can `C-x C-x` to switch point and mark to make changes to the top/bottom of the selected region (hit it yet again to switch to the other diagonal).
+A rectangle is just a _region_ (point and mark), specially interpreted.  While marking rectangles, you can `C-x C-x` to bring point to any of the rectangles four corners.  This is useful to make changes to appropriate side of the selected region.
 
 Use calc, it's super-powerful:
 
@@ -47,15 +48,15 @@ Use calc, it's super-powerful:
 
 [Calc](https://www.gnu.org/software/emacs/manual/html_mono/calc.html) is an ancient and powerful calculator in emacs with many capabilities, including operating on [matrix data](https://www.gnu.org/software/emacs/manual/html_node/calc/Matrix-Tutorial.html).  In addition to simple sums, `SpeedRect` offers powerful two-way communication with calc for sending in and yanking out columns of numerical data:
 
-1. It can send columns of numbers to calc as a _matrix_ (2D array of numbers).  Once in calc, you can operate on those numbers using a wide array of operations.  Many things "just work" on matrices (e.g. `1 +` will add one to all the numbers).  Others can easily be mapped over matrix elements (try `v M`). You can combine columns, change their order, and much more.
-2. Once you have something you're happy with at the top of calc's *stack* (the entry numbered `1:`), you can:
-    - hit `q` to return to your original buffer (where `rectangle-mark-mode` will still be active),
+1. It can send columns of numbers to calc as a _matrix_ (2D array of numbers).  Once in calc, you can operate on those numbers using a wide array of operations.  Many things "just work" on matrices (e.g. `1 +` will add one to all the numbers).  Others can easily be mapped over matrix elements (e.g. try `v M Q` to map `sqrt` over all ements). You can combine columns, change their order, and _much_ more.
+2. Once you have something you're happy with at the top of calc's *stack* (the bottom, entry numbered `1:`), you can:
+    - hit `q` (or other window navigation) to return to your original buffer (where `rectangle-mark-mode` will still be active),
     - adjust the position of your rectangle if needed (`S-left/right` is useful for this; a zero-width rectangle is fine), and
     - hit `m` to yank the matrix from calc into the buffer (if it has the right number of rows), replacing the marked rectangle.
 
 You don't have to be in the same `mark-rectangle-mode` session to yank a matrix from calc.  As long as the height of your rectangle matches the number of matrix rows, it will just work.  So you can start in one buffer, accumulate a matrix, manipulate it, switch to another buffer, and yank it there.
 
-**Note**: what you see is what you get in calc.  The matrix will be yanked _exactly_ as it appears.  `v [` and `v ,` will remove the brackets and commas.  `v >` will right align numbers.  While `v .` is convenient for shortening long entries, undo it before yanking.  `d f` will let you set the number of digits after the decimal.  And many more options.  
+**Note**: what you see is what you get in calc.  The matrix will be yanked _exactly_ as it appears.  `v [` and `v ,` will remove the brackets and commas for a cleaner appearance.  `v >` will right align numbers.  While `v .` is convenient for shortening long entries, undo it before yanking.  `d f` will let you set the number of digits after the decimal.  And many more options.
 
 ## Key Listing
 
