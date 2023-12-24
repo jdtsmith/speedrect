@@ -265,10 +265,9 @@ non-nil, stash the rectangle after the command runs."
     (when speedrect-continue
       (run-at-time 0 nil
 		   (lambda ()
-		     (let ((rectangle-mark-mode-hook nil))
-		       (activate-mark)
-		       (rectangle-mark-mode 1)
-		       (speedrect-recall-last)))))))
+		     (activate-mark)
+		     (rectangle-mark-mode 1)
+		     (speedrect-recall-last))))))
 
 (defun speedrect-create-bindings ()
   "Create the bindings for speedrect.
