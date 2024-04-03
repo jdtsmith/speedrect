@@ -40,7 +40,7 @@ Start `rectangle-mark-mode` as usual (`C-x SPC`, by default).  Hit `?` to summon
 
 ## Hints
 
-A rectangle is just a _region_ (point and mark), specially interpreted.  While marking rectangles, you can `C-x C-x` to bring point to any of the rectangles four corners.  This is useful to make changes to appropriate side of the selected region.
+A rectangle is just a _region_ (point and mark), specially interpreted.  While marking rectangles, you can `C-x C-x` to cycle point among any of the rectangle's four corners.  This is useful to make changes to the appropriate side of the selected region.
 
 Use calc, it's super-powerful:
 
