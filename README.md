@@ -20,7 +20,7 @@ Quick key bindings and other tools for Emacs' `rectangle-mark-mode`.
 
 ## News
 
-v0.4: 
+v0.4: New command `x` for moving around rectangle corners, and `M` for placing multiple-cursors on each line at the current column.
 
 ## Installation
 
