@@ -2,8 +2,8 @@
 ;; Copyright (C) 2023 J.D. Smith
 
 ;; Author: JD Smith
-;; Created: 2023
-;; Version: 0.3.1
+;; Created: 2023-2024
+;; Version: 0.4.0
 ;; Package-Requires: ((emacs "25.1") (compat "29.1.4.0"))
 ;; Homepage: https://github.com/jdtsmith/speedrect
 ;; Keywords: convenience
@@ -202,6 +202,20 @@ each side of the inserted text."
 		      (length crect) height)))
     (user-error "Calc rectangle yank not possible here")))
 
+(declare-function mc/edit-lines "mc-edit-lines")
+(defun speedrect-multiple-cursors ()
+  "Add multiple cursors on each line at the current column."
+  (interactive)
+  (condition-case nil
+      (require 'multiple-cursors)
+    (error (user-error "Multiple-cursors not found"))
+    (:success
+     (let ((col (current-column)))
+       (speedrect-stash)
+       (exchange-point-and-mark)
+       (move-to-column col)
+       (mc/edit-lines)))))
+
 (defun speedrect-transient-map-info ()
   "Documentation window for speedrect."
   (interactive)
@@ -218,9 +232,9 @@ each side of the inserted text."
 	     "  [SPC] del-ws  delete all whitespace, starting from left column\n"
 	     "  [c] clear     clear rectangle area by overwriting with spaces\n"
 	     "  [r] rest      delete the rest of the columns, keeping the marked rectangle\n\n"
-	     "Change Rectangle:\n\n"
-	     "  [n] new       start a new rectangle from this location\n"
-	     "  [l] last      restore the last used rectangle position, if possible\n\n"
+	     "Copy/Yank:\n\n"
+	     "  [w] copy      copy rectangle for future yanking\n"
+	     "  [y] yank      yank rectangle, inserting at point\n\n"
 	     "Shift Rectangle (can use numeric prefixes):\n\n"
 	     "  [S-left]      move the rectangle left\n"
 	     "  [S-right]     move the rectangle right\n"
@@ -230,9 +244,10 @@ each side of the inserted text."
 	     "  [M-S-right]   move the rectangle right 5 columns\n"
 	     "  [M-S-up]      move the rectangle up 5 columns\n"
 	     "  [M-S-down]    move the rectangle down 5 lines\n\n"
-	     "Copy/Yank:\n\n"
-	     "  [w] copy      copy rectangle for future yanking\n"
-	     "  [y] yank      yank rectangle, inserting at point\n\n"
+	     "Change Rectangle:\n\n"
+	     "  [x] corners   move point around corners of the rectangle\n"
+	     "  [n] new       start a new rectangle from this location\n"
+	     "  [l] last      restore the last used rectangle, if possible\n\n"
 	     "Numerical:\n\n"
 	     "  [N] numbers   fill the rectangle with numbers (prefix to set start)\n"
 	     "  [#] grab      grab the rectangle as a matrix in calc\n"
@@ -240,6 +255,7 @@ each side of the inserted text."
 	     "  [:] down      sum down the columns and grab result in calc\n"
 	     "  [m] yank-mat  yank matrix from top of calc stack, overwriting selected rect\n\n"
 	     "Etc:\n\n"
+	     "  [M] multiple-cursors   add cursors at current column\n"
 	     "  [?] help      view this Help buffer\n"
 	     "  [q] quit      exit rectangle-mark-mode"))
       (princ l))))
@@ -281,6 +297,7 @@ prior to deactivating mark."
      ("y" speedrect-yank-rectangle-dwim t) ("c" clear-rectangle t)
      ("d" delete-rectangle after)  ("N" rectangle-number-lines t)
      ("r" speedrect-delete-rest t) ("SPC" delete-whitespace-rectangle t)
+     ("x" rectangle-exchange-point-and-mark)
      ;; Shift rect
      ("S-<right>" speedrect-shift-right)
      ("S-<left>" speedrect-shift-left)
@@ -295,6 +312,7 @@ prior to deactivating mark."
      ("m" speedrect-yank-from-calc after)
      ;; Special
      ("n" speedrect-restart) ("l" speedrect-recall-last)
+     ("M" speedrect-multiple-cursors)
      ("?" speedrect-transient-map-info) ("q" speedrect-quit))
    for bind = (if wrap (speedrect--wrap-command def (eq wrap 'after)) def)
    do (define-key rectangle-mark-mode-map (kbd key) bind))

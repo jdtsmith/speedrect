@@ -18,6 +18,10 @@ Quick key bindings and other tools for Emacs' `rectangle-mark-mode`.
 - Two-way interaction with Calc: send sums or tables of data into calc, and yank processed matrix data back into the rectangle from the top of calc's stack.
 - A useful help page (`?`). 
 
+## News
+
+v0.4: 
+
 ## Installation
 
 Just download, add to path, and arrange to `(require 'speedrect)`.  For users of `use-package`:
@@ -40,9 +44,9 @@ Start `rectangle-mark-mode` as usual (`C-x SPC`, by default).  Hit `?` to summon
 
 ## Hints
 
-A rectangle is just a _region_ (point and mark), specially interpreted.  While marking rectangles, you can `C-x C-x` to cycle point among any of the rectangle's four corners.  This is useful to make changes to the appropriate side of the selected region.
+A rectangle is just a _region_ (point and mark), specially interpreted.  While marking rectangles, you can use `x` to cycle point among any of the rectangles four corners.  This is useful to make changes to the appropriate side of the selected region.
 
-Use calc, it's super-powerful:
+Use calc, it's super-powerful...
 
 ### Using Calc
 
@@ -77,10 +81,10 @@ Killing:
   [c] clear     clear rectangle area by overwriting with spaces
   [r] rest      delete the rest of the columns, keeping the marked rectangle
 
-Change Rectangle:
+Copy/Yank:
 
-  [n] new       start a new rectangle from this location
-  [l] last      restore the last used rectangle position, if possible
+  [w] copy      copy rectangle for future yanking
+  [y] yank      yank rectangle, inserting at point
 
 Shift Rectangle (can use numeric prefixes):
 
@@ -93,10 +97,11 @@ Shift Rectangle (can use numeric prefixes):
   [M-S-up]      move the rectangle up 5 columns
   [M-S-down]    move the rectangle down 5 lines
 
-Copy/Yank:
+Change Rectangle:
 
-  [w] copy      copy rectangle for future yanking
-  [y] yank      yank rectangle, inserting at point
+  [x] corners   move point around corners of the rectangle
+  [n] new       start a new rectangle from this location
+  [l] last      restore the last used rectangle, if possible
 
 Numerical:
 
@@ -108,6 +113,7 @@ Numerical:
 
 Etc:
 
+  [M] multiple-cursors   add cursors at current column
   [?] help      view this Help buffer
   [q] quit      exit rectangle-mark-mode
 ```
