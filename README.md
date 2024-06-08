@@ -16,6 +16,7 @@ Quick key bindings and other tools for Emacs' `rectangle-mark-mode`.
 - Exposes a useful command (`SPC`) to delete whitespace from the left rectangle boundary.
 - Column shift: slide the marked rectangle position left or right, 1 (hold shift) or 5 (meta-shift) columns at a time (or any number of columns, with a numerical prefix). 
 - Two-way interaction with Calc: send sums or tables of data into calc, and yank processed matrix data back into the rectangle from the top of calc's stack.
+- Quickly add multiple cursors on each line of the current rectangle.  
 - A useful help page (`?`). 
 
 ## News
