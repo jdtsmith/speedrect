@@ -56,7 +56,7 @@ Use calc, it's super-powerful...
 1. It can send columns of numbers to calc as a _matrix_ (2D array of numbers).  Once in calc, you can operate on those numbers using a wide array of operations.  Many things "just work" on matrices (e.g. `1 +` will add one to all the numbers).  Others can easily be mapped over matrix elements (e.g. try `v M Q` to map `sqrt` over all elements). You can combine columns, change their order, and _much_ more.
 2. Once you have something you're happy with at the top of calc's *stack* (at the bottom of the `*Calculator*` buffer, entry numbered `1:`), you can:
     - hit `q` (or other window navigation) to return to your original buffer (where `rectangle-mark-mode` will still be active),
-    - adjust the position of your rectangle if needed (`S-left/right` and/or `C-x C-x` is useful for this; a zero-width rectangle is fine), and
+    - adjust the position of your rectangle if needed (`S-left/right` and/or `x` is useful for this; a zero-width rectangle is fine), and
     - hit `m` to yank the latest matrix from calc into the buffer (if it has the right number of rows), replacing the marked rectangle.
 
 You don't have to be in the same `mark-rectangle-mode` session to yank a matrix from calc.  As long as the height of your rectangle matches the number of matrix rows, it will just work.  So you can start in one buffer, accumulate a matrix, manipulate it, switch to another buffer, and yank it there.
