@@ -54,24 +54,21 @@ Stored as (point-line point-col mark-line mark-col)")
   "Stash the line and column of point and mark."
   (when rectangle-mark-mode
     (setq speedrect-last
-	  (append (speedrect-linecol)
-		  (save-excursion
-		    (goto-char (mark))
-		    (speedrect-linecol))))))
+	  (list (point) (mark)
+		(window-parameter nil 'rectangle--point-crutches)
+		rectangle--mark-crutches))))
 
 (defun speedrect-recall-last ()
   "Restore last saved rectangle position."
   (interactive)
   (pcase speedrect-last
-    (`(,pl ,pc ,ml ,mc)
-     (goto-char (point-min))
-     (forward-line (1- ml))
-     (move-to-column mc)
-     (set-mark (point))
-     (forward-line (- pl ml))
-     (move-to-column pc)
+    (`(,point ,mark ,point-crutches ,mark-crutches)
+     (set-mark mark)
+     (goto-char point)
+     (setf (window-parameter nil 'rectangle--point-crutches) point-crutches)
+     (setq-local rectangle--mark-crutches mark-crutches)
      (if (called-interactively-p 'interactive)
-	 (message "Restored last rectangle %d %d, %d %d" ml mc pl pc)))
+	 (message "Restored last rectangle %d %d" point mark)))
     (_ (message "No stored rectangle position"))))
 
 (defun speedrect-restart ()
@@ -269,10 +266,10 @@ each side of the inserted text."
      (command &optional after)
   "Wrap an interactive COMMAND to store rect and (posibly) reenter.
 Many/most rectangle commands deactivate mark and exit
-`rectangle-mark-mode'.  This ensure the rectangle is stashed
-before such commands, and, if custom option `speedrect-continue'
-is non-nil, restarts with the same rectangle.  If AFTER is
-non-nil, stash the rectangle after the command runs."
+`rectangle-mark-mode'.  This stashes the rectangle before such
+commands, and, if custom option `speedrect-continue' is non-nil,
+restarts with the same rectangle.  If AFTER is non-nil, stash the
+rectangle after the command runs."
   (lambda ()
     (interactive)
     (unless after (speedrect-stash))
