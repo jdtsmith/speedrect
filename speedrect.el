@@ -320,10 +320,12 @@ rectangle after the command runs, otherwise, stash it before."
     (when after (speedrect-stash))
     (when speedrect-continue
       (run-at-time 0 nil
-		   (lambda ()
-		     (activate-mark)
-		     (rectangle-mark-mode 1)
-		     (speedrect-recall-last))))))
+		   (lambda (buf)
+		     (with-current-buffer buf
+		       (activate-mark)
+		       (rectangle-mark-mode 1)
+		       (speedrect-recall-last)))
+		   (current-buffer)))))
 
 (defun speedrect-create-bindings ()
   "Create the bindings for speedrect.
