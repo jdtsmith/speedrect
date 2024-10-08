@@ -145,6 +145,12 @@ Note that point and mark will not move beyond the end of text on their lines."
   (if (< (mark) (point)) (exchange-point-and-mark))
   (call-interactively #'yank-rectangle))
 
+(defun speedrect-copy-rectangle-dwim ()
+  "Copy rectangle, but first swap mark and point if needed."
+  (interactive)
+  (if (< (mark) (point)) (exchange-point-and-mark))
+  (call-interactively #'copy-rectangle-as-kill))
+
 (defun speedrect-delete-rest (start end)
   "Keep rectangle between START and END, deleting the rest of the affected lines."
   (interactive "r")
@@ -220,6 +226,35 @@ each side of the inserted text."
        (move-to-column col)
        (mc/edit-lines)))))
 
+(defun speedrect-fill-text (width)
+  "Fill text in the rectangle to the given WIDTH."
+  (interactive
+   (list (cond ((null current-prefix-arg)
+		(car (rectangle-dimensions (point) (mark))))
+	       ((consp current-prefix-arg)
+		(read-number "Fill width: "))
+	       (t (prefix-numeric-value current-prefix-arg)))))
+  (when (<= width 0) (user-error "Fill width must be >0"))
+  (let ((rect (apply #'delete-extract-rectangle
+		     (if (< (point) (mark))
+			 (list (point) (mark))
+		       (list (mark) (point))))))
+    (with-temp-buffer
+      (dolist (line rect) (insert line " "))
+      (message "GOT %S" (buffer-string))
+      (let ((fill-column (point-max)))
+	(fill-region (point-min) (point-max)))
+      (let ((fill-column width))
+	(fill-region (point-min) (point-max) nil 'nosqueeze))
+      (message "THEN %S" (buffer-string))
+      (goto-char (point-min))
+      (set-mark (point))
+      (goto-char (point-max))
+      (beginning-of-line)
+      (rectangle-forward-char width)
+      (speedrect-copy-rectangle-dwim))
+    (speedrect-yank-rectangle-dwim)))
+
 (defun speedrect-transient-map-info ()
   "Documentation window for speedrect."
   (interactive)
@@ -228,8 +263,8 @@ each side of the inserted text."
 	(l '("SpeedRect Rectangle Mark Mode Commands\n"
 	     "============================================================================\n\n"
 	     "Insertion:\n\n"
-	     "  [o] open      fill rectangle with tabs/spaces, moving adjacent text right\n"
-	     "  [t] string    replace rectangle with prompt string\n\n"
+	     "  [o] open      open rectangle with tabs/spaces, shifting text right\n"
+	     "  [t] string    replace rectangle with string\n\n"
 	     "Killing:\n\n"
 	     "  [k] kill      kill and save rectangle for yanking\n"
 	     "  [d] delete    kill rectangle without saving\n"
@@ -259,6 +294,7 @@ each side of the inserted text."
 	     "  [:] down      sum down the columns and grab result in calc\n"
 	     "  [m] yank-mat  yank matrix from top of calc stack, overwriting selected rect\n\n"
 	     "Etc:\n\n"
+	     "  [f] fill text within rectangle (prefix to prompt fill width)\n"
 	     "  [M] multiple-cursors   add cursors at current column\n"
 	     "  [?] help      view this Help buffer\n"
 	     "  [q] quit      exit rectangle-mark-mode"))
@@ -316,6 +352,7 @@ prior to deactivating mark."
      ("m" speedrect-yank-from-calc after)
      ;; Special
      ("n" speedrect-restart) ("l" speedrect-recall-last)
+     ("f" speedrect-fill-text after)
      ("M" speedrect-multiple-cursors)
      ("?" speedrect-transient-map-info) ("q" speedrect-quit))
    for bind = (if wrap (speedrect--wrap-command def (eq wrap 'after)) def)
