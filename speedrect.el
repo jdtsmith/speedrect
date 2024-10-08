@@ -312,7 +312,7 @@ Many/most rectangle commands deactivate mark and exit
 `rectangle-mark-mode'.  This stashes the rectangle before such
 commands, and, if custom option `speedrect-continue' is non-nil,
 restarts with the same rectangle.  If AFTER is non-nil, stash the
-rectangle after the command runs."
+rectangle after the command runs, otherwise, stash it before."
   (lambda ()
     (interactive)
     (unless after (speedrect-stash))
