@@ -236,24 +236,31 @@ each side of the inserted text."
 	       (t (prefix-numeric-value current-prefix-arg)))))
   (when (<= width 0) (user-error "Fill width must be >0"))
   (with-undo-amalgamate
-    (let ((rect (apply #'delete-extract-rectangle
+    (let ((height (cdr (rectangle-dimensions (point) (mark))))
+	  (rect (apply #'delete-extract-rectangle
 		       (if (< (point) (mark))
 			   (list (point) (mark))
-			 (list (mark) (point))))))
+			 (list (mark) (point)))))
+	  filled-height)
       (with-temp-buffer
 	(dolist (line rect) (insert line " "))
-	(message "GOT %S" (buffer-string))
 	(let ((fill-column (point-max)))
 	  (fill-region (point-min) (point-max)))
 	(let ((fill-column width))
 	  (fill-region (point-min) (point-max) nil 'nosqueeze))
-	(message "THEN %S" (buffer-string))
 	(goto-char (point-min))
 	(set-mark (point))
 	(goto-char (point-max))
 	(beginning-of-line)
+	(setq filled-height (line-number-at-pos))
 	(rectangle-forward-char width)
 	(speedrect-copy-rectangle-dwim))
+      (when (< height filled-height)
+	(save-excursion
+	  (when (> (mark) (point))
+	    (goto-char (mark)))
+	  (end-of-line)
+	  (open-line (- filled-height height))))
       (speedrect-yank-rectangle-dwim))))
 
 (defun speedrect-transient-map-info ()
