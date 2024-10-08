@@ -1,7 +1,6 @@
 # SpeedRect
 <img src="https://user-images.githubusercontent.com/93749/223541236-cd77d56c-d1d0-40cd-8d69-f6c12dfe3d3a.png" width=423 align="right">
 
-
 Quick key bindings and other tools for Emacs' `rectangle-mark-mode`.
 
 `SpeedRect` is a small Emacs package that provides convenient "modal" key bindings and other tools while in `rectangle-mark-mode` (`C-x SPC`, by default).
@@ -21,6 +20,7 @@ Quick key bindings and other tools for Emacs' `rectangle-mark-mode`.
 
 ## News
 
+v0.5: New command `f` to fill (wrap) text in the rectangle.  Use prefix for fill width (defaults to rectangle width).
 v0.4: New command `x` for moving around rectangle corners, and `M` for placing multiple-cursors on each line at the current column.
 
 ## Installation
@@ -71,8 +71,8 @@ SpeedRect Rectangle Mark Mode Commands
 
 Insertion:
 
-  [o] open      fill rectangle with tabs/spaces, moving adjacent text right
-  [t] string    replace rectangle with prompt string
+  [o] open      open rectangle with tabs/spaces, shifting text right
+  [t] string    replace rectangle with string
 
 Killing:
 
@@ -114,6 +114,7 @@ Numerical:
 
 Etc:
 
+  [f] fill text within rectangle (prefix to prompt fill width)
   [M] multiple-cursors   add cursors at current column
   [?] help      view this Help buffer
   [q] quit      exit rectangle-mark-mode
