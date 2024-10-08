@@ -50,26 +50,33 @@
   "Last rectangle position.
 Stored as (point-line point-col mark-line mark-col)")
 
-(defun speedrect-stash ()
-  "Stash the line and column of point and mark."
-  (when rectangle-mark-mode
-    (setq speedrect-last
-	  (list (point) (mark)
-		(window-parameter nil 'rectangle--point-crutches)
-		rectangle--mark-crutches))))
-
 (defun speedrect-recall-last ()
   "Restore last saved rectangle position."
   (interactive)
   (pcase speedrect-last
-    (`(,point ,mark ,point-crutches ,mark-crutches)
-     (set-mark mark)
+    (`((,point . ,mark) ,point-crutches ,mark-crutches)
+     (set-mark (marker-position mark))
      (goto-char point)
      (setf (window-parameter nil 'rectangle--point-crutches) point-crutches)
      (setq-local rectangle--mark-crutches mark-crutches)
      (if (called-interactively-p 'interactive)
-	 (message "Restored last rectangle %d %d" point mark)))
+	 (message "Restored last rectangle %d %d"
+		  (marker-position point) (marker-position mark))))
     (_ (message "No stored rectangle position"))))
+
+(defun speedrect-stash ()
+  "Stash the line and column of point and mark."
+  (when rectangle-mark-mode
+    (let ((pm (car speedrect-last)))
+      (if pm
+	  (progn
+	    (move-marker (car pm) (point))
+	    (move-marker (cdr pm) (mark)))
+	(setq pm (cons (point-marker) (copy-marker (mark-marker)))))
+      (setq speedrect-last
+	    (list pm
+	     (window-parameter nil 'rectangle--point-crutches)
+	     rectangle--mark-crutches)))))
 
 (defun speedrect-restart ()
   "Start a new rectangle, setting mark at the current position."
@@ -322,9 +329,10 @@ prior to deactivating mark."
     (message "%s: [?] for help%s"
 	     (propertize "SpeedRect" 'face 'success)
 	     (if speedrect-last
-		 (format "  %s:%S"
+		 (format "  %s:%d->%d"
 			 (propertize "last-rect" 'face 'bold)
-			 speedrect-last)
+			 (marker-position (caar speedrect-last))
+			 (marker-position (cdar speedrect-last)))
 	       ""))))
 
 ;;; autoload
