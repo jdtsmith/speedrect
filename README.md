@@ -3,7 +3,7 @@
 
 Quick key bindings and other tools for Emacs' `rectangle-mark-mode`.
 
-`SpeedRect` is a small Emacs package that provides convenient "modal" key bindings and other tools while in `rectangle-mark-mode` (`C-x SPC`, by default).
+`SpeedRect` is a small Emacs package that provides convenient "modal" key bindings and other tools while in `rectangle-mark-mode` (`C-x SPC`, or `C-M-mouse1` drag, by default).
 
 ## Features
 
