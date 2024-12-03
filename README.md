@@ -64,7 +64,7 @@ Use calc, it's super-powerful...
 You don't have to be in the same `mark-rectangle-mode` session to yank a matrix from calc.  As long as the height of your rectangle matches the number of matrix rows, it will just work.  So you can start in one buffer, accumulate a matrix, manipulate it, switch to another buffer, and yank it there.
 
 > [!NOTE]
-> What you see is what you get in calc.  The numbers shown in calc will be yanked as they appears (omitting brackets and expanding any `...` style shortening in effect).  `v ,` will remove commas for a cleaner appearance.  `v >` will right align numbers.  `d f` will let you set the number of digits after the decimal.  And _many_ more options.
+> What you see is what you get in calc.  The numbers shown in calc will be yanked as they appear on the stack, except `speedrect` automatically omits brackets and expands `...` vector shortening.  `v ,` will remove commas for a cleaner appearance.  `v >` will right align numbers.  `d f` will let you set the number of digits after the decimal.  And _many_ more numerical formatting options.  By default a 
 
 ## Key Listing
 
