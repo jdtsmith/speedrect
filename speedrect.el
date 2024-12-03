@@ -421,7 +421,7 @@ prior to deactivating mark."
 			 (marker-position (cdar speedrect-last)))
 	       ""))))
 
-;;; autoload
+;;;###autoload
 (define-minor-mode speedrect-mode
   "Enable rectangular modal editing."
   :global t
