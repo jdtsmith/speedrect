@@ -1,4 +1,5 @@
 ;;; speedrect.el ---  Fast modal rectangle commands -*- lexical-binding: t -*-
+
 ;; Copyright (C) 2023-2024  Free Software Foundation, Inc.
 
 ;; Author: JD Smith <jdtsmith+elpa@gmail.com>
@@ -34,13 +35,16 @@
 (require 'calc)
 (require 'subr-x)
 (require 'compat)
-(eval-when-compile (require 'cl-lib))
+(require 'cl-lib)
+
+(defgroup speedrect ()
+  "Fast modal rectangle commands."
+  :group 'rectangle)
 
 ;;;; Customization
 (defcustom speedrect-continue t
   "Stay in speedrect until quit."
-  :type 'boolean
-  :group 'rectangle)
+  :type 'boolean)
 
 (defun speedrect-linecol ()
   "Return line and column as list."
@@ -49,7 +53,7 @@
 ;;;; Variables
 (defvar-local speedrect-last nil
   "Last rectangle position.
-Stored as (point-line point-col mark-line mark-col)")
+Stored as (POINT-LINE POINT-COL MARK-LINE MARK-COL), where ....")
 
 (defun speedrect-recall-last ()
   "Restore last saved rectangle position."
@@ -60,9 +64,9 @@ Stored as (point-line point-col mark-line mark-col)")
      (goto-char point)
      (setf (window-parameter nil 'rectangle--point-crutches) point-crutches)
      (setq-local rectangle--mark-crutches mark-crutches)
-     (if (called-interactively-p 'interactive)
-	 (message "Restored last rectangle %d %d"
-		  (marker-position point) (marker-position mark))))
+     (when (called-interactively-p 'interactive)
+       (message "Restored last rectangle %d %d"
+		(marker-position point) (marker-position mark))))
     (_ (message "No stored rectangle position"))))
 
 (defun speedrect-stash ()
@@ -76,8 +80,8 @@ Stored as (point-line point-col mark-line mark-col)")
 	(setq pm (cons (point-marker) (copy-marker (mark-marker)))))
       (setq speedrect-last
 	    (list pm
-	     (window-parameter nil 'rectangle--point-crutches)
-	     rectangle--mark-crutches)))))
+		  (window-parameter nil 'rectangle--point-crutches)
+		  rectangle--mark-crutches)))))
 
 (defun speedrect-restart ()
   "Start a new rectangle, setting mark at the current position."
@@ -204,7 +208,7 @@ and `d n' with a prefix arg changes the displayed precision.  A
 minimum of one padding space is preserved on each side of the
 inserted text."
   (interactive "r")
-  (if-let ((rectangle-mark-mode)
+  (if-let* ((rectangle-mark-mode)
 	   (buf (get-buffer "*Calculator*")))
       (let* ((lines (with-current-buffer buf
 		      (string-lines
@@ -224,7 +228,7 @@ inserted text."
 	       (wdth (length (car lines))) ; note: last line may differ
 	       (low (max 0 (1- (car lr))))
 	       (high (min 0 (- (1- (cdr lr)))))
-	       (lst (last lines)))
+	       (lst (last lines)))	;unused?
 	  (apply-on-rectangle 'speedrect--replace-with-rect
 			      start end lines wdth low high)))
     (user-error "Calc rectangle yank not possible here")))
@@ -248,10 +252,7 @@ inserted text."
 (defun speedrect-copy-rectangle-as-text ()
   "Copy the current rectangle to the kill ring as normal text."
   (interactive)
-  (let ((rect (apply #'extract-rectangle
-		     (if (< (point) (mark))
-			 (list (point) (mark))
-		       (list (mark) (point))))))
+  (let ((rect (extract-rectangle (region-beginning) (region-end))))
     (kill-new (string-join rect "\n"))
     (message "Copied rectangle as %d lines" (length rect))))
 
@@ -297,47 +298,45 @@ inserted text."
   "Documentation window for speedrect."
   (interactive)
   (with-help-window "SpeedRect Command Key Help"
-    (dolist
-	(l '("SpeedRect Rectangle Mark Mode Commands\n"
-	     "============================================================================\n\n"
-	     "Insertion:\n\n"
-	     "  [o] open      open rectangle with tabs/spaces, shifting text right\n"
-	     "  [t] string    replace rectangle with string\n\n"
-	     "Killing:\n\n"
-	     "  [k] kill      kill and save rectangle for yanking\n"
-	     "  [d] delete    kill rectangle without saving\n"
-	     "  [SPC] del-ws  delete all whitespace, starting from left column\n"
-	     "  [c] clear     clear rectangle area by overwriting with spaces\n"
-	     "  [r] rest      delete the rest of the columns, keeping the marked rectangle\n\n"
-	     "Copy/Yank:\n\n"
-	     "  [w] copy      copy rectangle for future rectangle yanking\n"
-	     "  [W] copy      copy rectangle to kill ring as normal text\n"
-	     "  [y] yank      yank rectangle, inserting at point\n\n"
-	     "Shift Rectangle (can use numeric prefixes):\n\n"
-	     "  [S-left]      move the rectangle left\n"
-	     "  [S-right]     move the rectangle right\n"
-	     "  [S-up]        move the rectangle up\n"
-	     "  [S-down]      move the rectangle down\n"
-	     "  [M-S-left]    move the rectangle left 5 columns\n"
-	     "  [M-S-right]   move the rectangle right 5 columns\n"
-	     "  [M-S-up]      move the rectangle up 5 lines\n"
-	     "  [M-S-down]    move the rectangle down 5 lines\n\n"
-	     "Change Rectangle:\n\n"
-	     "  [x] corners   move point around corners of the rectangle\n"
-	     "  [n] new       start a new rectangle from this location\n"
-	     "  [l] last      restore the last used rectangle, if possible\n\n"
-	     "Numerical:\n\n"
-	     "  [N] numbers   fill the rectangle with numbers (prefix to set start)\n"
-	     "  [#] grab      grab the rectangle as a matrix in calc\n"
-	     "  [_] across    sum across rows and grab result in calc as a vector\n"
-	     "  [:] down      sum down the columns and grab result in calc\n"
-	     "  [m] yank-mat  yank matrix from top of calc stack, overwriting selected rect\n\n"
-	     "Etc:\n\n"
-	     "  [f] fill      fill text within rectangle (prefix to prompt fill width)\n"
-	     "  [M] multiple-cursors  add cursors at current column\n"
-	     "  [?] help      view this Help buffer\n"
-	     "  [q] quit      exit rectangle-mark-mode"))
-      (princ l))))
+    (princ "SpeedRect Rectangle Mark Mode Commands
+============================================================================\n
+Insertion:
+  [o] open      open rectangle with tabs/spaces, shifting text right
+  [t] string    replace rectangle with string\n
+Killing:\n
+  [k] kill      kill and save rectangle for yanking
+  [d] delete    kill rectangle without saving
+  [SPC] del-ws  delete all whitespace, starting from left column
+  [c] clear     clear rectangle area by overwriting with spaces
+  [r] rest      delete the rest of the columns, keeping the marked rectangle\n
+Copy/Yank:\n
+  [w] copy      copy rectangle for future rectangle yanking
+  [W] copy      copy rectangle to kill ring as normal text
+  [y] yank      yank rectangle, inserting at point\n
+Shift Rectangle (can use numeric prefixes):\n
+  [S-left]      move the rectangle left
+  [S-right]     move the rectangle right
+  [S-up]        move the rectangle up
+  [S-down]      move the rectangle down
+  [M-S-left]    move the rectangle left 5 columns
+  [M-S-right]   move the rectangle right 5 columns
+  [M-S-up]      move the rectangle up 5 lines
+  [M-S-down]    move the rectangle down 5 lines\n
+Change Rectangle:\n
+  [x] corners   move point around corners of the rectangle
+  [n] new       start a new rectangle from this location
+  [l] last      restore the last used rectangle, if possible\n
+Numerical:\n
+  [N] numbers   fill the rectangle with numbers (prefix to set start)
+  [#] grab      grab the rectangle as a matrix in calc
+  [_] across    sum across rows and grab result in calc as a vector
+  [:] down      sum down the columns and grab result in calc
+  [m] yank-mat  yank matrix from top of calc stack, overwriting selected rect\n
+Etc:\n
+  [f] fill      fill text within rectangle (prefix to prompt fill width)
+  [M] multiple-cursors  add cursors at current column
+  [?] help      view this Help buffer
+  [q] quit      exit rectangle-mark-mode")))
 
 ;;;; Bindings and mode
 (defun speedrect-quit ()
@@ -345,8 +344,7 @@ inserted text."
   (interactive)
   (deactivate-mark))
 
-(defun speedrect--wrap-command
-     (command &optional after)
+(defun speedrect--wrap-command (command &optional after)
   "Wrap an interactive COMMAND to store rect and (posibly) reenter.
 Many/most rectangle commands deactivate mark and exit
 `rectangle-mark-mode'.  This stashes the rectangle before such
@@ -425,7 +423,12 @@ prior to deactivating mark."
 	       ""))))
 
 ;;; autoload
-(add-hook 'rectangle-mark-mode-hook #'speedrect-hook)
+(define-minor-mode speedrect-mode
+  "Enable rectangular modal editing."
+  :global t
+  (if speedrect-mode
+      (add-hook 'rectangle-mark-mode-hook #'speedrect-hook)
+    (remove-hook 'rectangle-mark-mode-hook #'speedrect-hook)))
 
 (provide 'speedrect)
 ;;; speedrect.el ends here
