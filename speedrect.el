@@ -3,8 +3,8 @@
 ;; Copyright (C) 2023-2024  Free Software Foundation, Inc.
 
 ;; Author: JD Smith <jdtsmith+elpa@gmail.com>
-;; Created: 2023-2024
-;; Version: 0.5.2
+;; Created: 2023
+;; Version: 0.6
 ;; Package-Requires: ((emacs "29.1") (compat "30"))
 ;; Homepage: https://github.com/jdtsmith/speedrect
 ;; Keywords: convenience
