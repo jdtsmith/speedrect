@@ -227,8 +227,7 @@ inserted text."
 	(let* ((lr (speedrect--lr-space lines))
 	       (wdth (length (car lines))) ; note: last line may differ
 	       (low (max 0 (1- (car lr))))
-	       (high (min 0 (- (1- (cdr lr)))))
-	       (lst (last lines)))	;unused?
+	       (high (min 0 (- (1- (cdr lr))))))
 	  (apply-on-rectangle 'speedrect--replace-with-rect
 			      start end lines wdth low high)))
     (user-error "Calc rectangle yank not possible here")))
