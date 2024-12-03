@@ -183,34 +183,32 @@ RECT (a list of strings)."
 START and END are the interactively-defined region beginning and
 end.  The (matrix) value at the top of the calc stack is used,
 and must have the same number of rows as the height of the marked
-rectangle.  To avoid copying brackets and commas, v [ and v , may
-be used in calc.  A minimum of one padding space is preserved on
-each side of the inserted text."
+rectangle.  Brackets are not copied and short vectors are
+expanded.  To avoid copying commas, `v ,' may be used in calc,
+and `d n' with a prefix arg changes the displayed precision.  A
+minimum of one padding space is preserved on each side of the
+inserted text."
   (interactive "r")
   (if-let ((rectangle-mark-mode)
 	   (buf (get-buffer "*Calculator*")))
-      (let* ((b (region-beginning))
+      (let* ((lines (with-current-buffer buf
+		      (string-lines
+		       (let ((calc-vector-brackets nil)
+			     (calc-full-vectors t))
+			 (math-format-value (calc-top))))))
+	     (b (region-beginning))
 	     (e (region-end))
-	     (height (+ (count-lines b e)
-			(if (eq (char-before e) ?\n) 1 0)))
-	     crect lr)
-	(with-current-buffer buf
-	  (let* ((cstart (progn (calc-cursor-stack-index 1)
-				(if (and calc-line-numbering (looking-at "[0-9]+: "))
-				    (match-end 0)
-				  (point))))
-		 (cend (progn (calc-cursor-stack-index 0) (line-end-position 0))))
-	    (setq crect (extract-rectangle cstart cend))))
-	(if (eq (length crect) height)
-	    (progn
-	      (setq lr (speedrect--lr-space crect))
-	      (push nil crect) ; dummy, for consuming in apply-on-rectangle
+	     (height (+ (count-lines b e) (if (eq (char-before e) ?\n) 1 0))))
+	(if (eq (length lines) height)
+	    (let* ((lr (speedrect--lr-space lines))
+		   (low (max 0 (1- (car lr))))
+		   (high (- (1- (cdr lr)))))
+	      (when (>= high 0) (setq high nil))
+	      (push nil lines) ; dummy, for consuming lines in apply-on-rectangle
 	      (apply-on-rectangle 'speedrect--replace-with-rect
-				  start end crect
-				  (max 0 (1- (car lr)))
-				  (min 0 (- (1- (cdr lr))))))
+				  start end lines low high))
 	  (user-error "Row count of calc matrix (%d) does not match rectangle height (%d)"
-		      (length crect) height)))
+		      (length lines) height)))
     (user-error "Calc rectangle yank not possible here")))
 
 (declare-function mc/edit-lines "mc-edit-lines")
