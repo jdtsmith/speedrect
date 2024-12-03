@@ -21,7 +21,7 @@ Quick key bindings and other tools for Emacs' `rectangle-mark-mode`.
 
 ## News
 
-- **v0.5.1**: Improved rectangle shift off ends of lines.
+- **v0.5.2**: Improved rectangle shift off ends of lines.  Better calc integration + vector shortening and brackets now always ignored.
 - **v0.5**: New command `f` to fill (wrap) text in the rectangle.  Use prefix for fill width (defaults to rectangle width).
 - **v0.4**: New command `x` for moving around rectangle corners, and `M` for placing multiple-cursors on each line at the current column.
 
