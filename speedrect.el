@@ -347,7 +347,7 @@ prior to deactivating mark."
      ("o" open-rectangle t)   	   ("w" copy-rectangle-as-kill t)
      ("y" speedrect-yank-rectangle-dwim t) ("c" clear-rectangle t)
      ("d" delete-rectangle after)  ("N" rectangle-number-lines t)
-     ("r" speedrect-delete-rest t) ("SPC" delete-whitespace-rectangle t)
+     ("r" speedrect-delete-rest after) ("SPC" delete-whitespace-rectangle t)
      ("x" rectangle-exchange-point-and-mark)
      ;; Shift rect
      ("S-<right>" speedrect-shift-right)
