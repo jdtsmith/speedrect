@@ -3,8 +3,8 @@
 
 ;; Author: JD Smith
 ;; Created: 2023-2024
-;; Version: 0.5.0
-;; Package-Requires: ((emacs "27.1") (compat "29.1.4.0"))
+;; Version: 0.5.1
+;; Package-Requires: ((emacs "29.1") (compat "30"))
 ;; Homepage: https://github.com/jdtsmith/speedrect
 ;; Keywords: convenience
 ;; Prefix: speedrect
