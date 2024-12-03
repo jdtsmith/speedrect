@@ -93,10 +93,11 @@ Stored as (point-line point-col mark-line mark-col)")
 Note that point and mark will not move beyond the end of text on their lines."
   (interactive "P")
   (let ((columns (or columns 1)))
-    (speedrect-right-char columns)
-    (exchange-point-and-mark)
-    (speedrect-right-char columns)
-    (exchange-point-and-mark)))
+    (dotimes (_ 2)
+      (speedrect-right-char columns)
+      ;; we bind this-command=nil to avoid the repeat logic of
+      ;; rectangle-exchange-point-and-mark
+      (let ((this-command nil)) (rectangle-exchange-point-and-mark)))))
 
 (defun speedrect-shift-right-fast (columns)
   "Shift the current speedrect left by COLUMNS (default 5)."
