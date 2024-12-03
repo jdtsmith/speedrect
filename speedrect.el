@@ -160,12 +160,23 @@ Note that point and mark will not move beyond the end of text on their lines."
 		   (progn (goto-char end) (line-end-position)))
     (insert (string-join rect "\n"))))
 
-(defun speedrect--replace-with-rect (startcol endcol rect &optional from to)
-  "Insert RECT's 2nd element, replacing text between STARTCOL and ENDCOL.
-The element is removed from RECT by side effect.  FROM and TO are
-optional substring positions to insert."
+(defun speedrect--replace-with-rect (startcol endcol lines width
+					      &optional from to)
+  "Insert LINES' 1st element, replacing text between STARTCOL and ENDCOL.
+Each string in LINES is space-padded to occupy at least WIDTH
+characters.  The element is removed from LINES by side effect.
+FROM and TO are optional substring positions to insert.  WIDTH is
+used to insert spaces if the LINES list is not long enough to
+full the full rectangle."
   (delete-rectangle-line startcol endcol nil)
-  (insert (substring (pop (cdr rect)) from to)))
+  (let ((el (car lines))
+	(w (- width (or from 0) (- (or to 0)))))
+    (if el
+	(progn
+	  (insert (substring el from (+ width to)))
+	  (setcar lines (cadr lines))
+	  (setcdr lines (cddr lines)))
+      (insert (make-string w ?\s)))))
 
 (defun speedrect--lr-space (rect)
   "Compute and return the minimum number of flanking spaces.
@@ -198,17 +209,20 @@ inserted text."
 			 (math-format-value (calc-top))))))
 	     (b (region-beginning))
 	     (e (region-end))
-	     (height (+ (count-lines b e) (if (eq (char-before e) ?\n) 1 0))))
-	(if (eq (length lines) height)
-	    (let* ((lr (speedrect--lr-space lines))
-		   (low (max 0 (1- (car lr))))
-		   (high (- (1- (cdr lr)))))
-	      (when (>= high 0) (setq high nil))
-	      (push nil lines) ; dummy, for consuming lines in apply-on-rectangle
-	      (apply-on-rectangle 'speedrect--replace-with-rect
-				  start end lines low high))
-	  (user-error "Row count of calc matrix (%d) does not match rectangle height (%d)"
-		      (length lines) height)))
+	     (rect-height (+ (count-lines b e) (if (eq (char-before e) ?\n) 1 0))))
+	(unless (= (length lines) rect-height)
+	  (warn "Row count of calc matrix (%d) does not match rectangle height (%d), %s"
+		(length lines) rect-height
+		(if (> rect-height (length lines)) "inserting blanks" "truncating"))
+	  (when (< rect-height (length lines))
+	   (setq lines (cl-subseq lines 0 rect-height))))
+	(let* ((lr (speedrect--lr-space lines))
+	       (wdth (length (car lines))) ; note: last line may differ
+	       (low (max 0 (1- (car lr))))
+	       (high (min 0 (- (1- (cdr lr)))))
+	       (lst (last lines)))
+	  (apply-on-rectangle 'speedrect--replace-with-rect
+			      start end lines wdth low high)))
     (user-error "Calc rectangle yank not possible here")))
 
 (declare-function mc/edit-lines "mc-edit-lines")
