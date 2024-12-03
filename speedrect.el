@@ -1,14 +1,12 @@
 ;;; speedrect.el ---  Fast modal rectangle commands -*- lexical-binding: t -*-
-;; Copyright (C) 2023 J.D. Smith
+;; Copyright (C) 2023-2024  Free Software Foundation, Inc.
 
-;; Author: JD Smith
+;; Author: JD Smith <jdtsmith+elpa@gmail.com>
 ;; Created: 2023-2024
 ;; Version: 0.5.2
 ;; Package-Requires: ((emacs "29.1") (compat "30"))
 ;; Homepage: https://github.com/jdtsmith/speedrect
 ;; Keywords: convenience
-;; Prefix: speedrect
-;; Separator: -
 
 ;; speedrect is free software: you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License as
@@ -26,17 +24,19 @@
 
 ;;; Commentary:
 
-;; This package adds convenient modal keybinding when
-;; rectangle-mark-mode is active (typically on C-x SPC).  Hit ? for
-;; help.
+;; This package adds convenient modal keybindings and additional
+;; functionality when rectangle-mark-mode is active (typically on C-x
+;; SPC).  Hit ? for help.
 
 ;;; Code:
+;;;; Requires
 (require 'rect)
 (require 'calc)
 (require 'subr-x)
 (require 'compat)
 (eval-when-compile (require 'cl-lib))
 
+;;;; Customization
 (defcustom speedrect-continue t
   "Stay in speedrect until quit."
   :type 'boolean
@@ -46,6 +46,7 @@
   "Return line and column as list."
   (list (line-number-at-pos) (current-column)))
 
+;;;; Variables
 (defvar-local speedrect-last nil
   "Last rectangle position.
 Stored as (point-line point-col mark-line mark-col)")
@@ -83,6 +84,7 @@ Stored as (point-line point-col mark-line mark-col)")
   (interactive)
   (set-mark (point)))
 
+;;;; Rectangle Movement
 (defsubst speedrect-right-char (columns)
   "Move COLUMNS right unless COLUMNS<0 and at left edge."
   (unless (and (eq (current-column) 0) (< columns 0))
@@ -140,6 +142,7 @@ Note that point and mark will not move beyond the end of text on their lines."
   (interactive "P")
   (speedrect-shift-down (- (or lines 5))))
 
+;;;; Manipulation
 (defun speedrect-yank-rectangle-dwim ()
   "Yank rectangle, but first swap mark and point if needed."
   (interactive)
@@ -189,6 +192,7 @@ RECT (a list of strings)."
 	   minimize (- (length s) (match-beginning 2)) into right
 	   finally return (cons left right)))
 
+;;;; Calc integration
 (defun speedrect-yank-from-calc (start end)
   "Yank matrix from top of calc stack, overwriting the marked rectangle.
 START and END are the interactively-defined region beginning and
@@ -215,7 +219,7 @@ inserted text."
 		(length lines) rect-height
 		(if (> rect-height (length lines)) "inserting blanks" "truncating"))
 	  (when (< rect-height (length lines))
-	   (setq lines (cl-subseq lines 0 rect-height))))
+	    (setq lines (cl-subseq lines 0 rect-height))))
 	(let* ((lr (speedrect--lr-space lines))
 	       (wdth (length (car lines))) ; note: last line may differ
 	       (low (max 0 (1- (car lr))))
@@ -225,6 +229,7 @@ inserted text."
 			      start end lines wdth low high)))
     (user-error "Calc rectangle yank not possible here")))
 
+;;;; Multiple Cursors
 (declare-function mc/edit-lines "mc-edit-lines")
 (defun speedrect-multiple-cursors ()
   "Add multiple cursors on each line at the current column."
@@ -239,6 +244,7 @@ inserted text."
        (move-to-column col)
        (mc/edit-lines)))))
 
+;;;; Rectangles as Text
 (defun speedrect-copy-rectangle-as-text ()
   "Copy the current rectangle to the kill ring as normal text."
   (interactive)
@@ -286,6 +292,7 @@ inserted text."
 	  (open-line (- filled-height height))))
       (speedrect-yank-rectangle-dwim))))
 
+;;;; Help
 (defun speedrect-transient-map-info ()
   "Documentation window for speedrect."
   (interactive)
@@ -332,6 +339,7 @@ inserted text."
 	     "  [q] quit      exit rectangle-mark-mode"))
       (princ l))))
 
+;;;; Bindings and mode
 (defun speedrect-quit ()
   "Quit speedrect."
   (interactive)
