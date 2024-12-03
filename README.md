@@ -3,23 +3,25 @@
 
 Quick key bindings and other tools for Emacs' `rectangle-mark-mode`.
 
-`SpeedRect` is a small Emacs package that provides convenient "modal" key bindings and other tools while in `rectangle-mark-mode` (`C-x SPC`, or `C-M-mouse1` drag, by default).
+`SpeedRect` is a small Emacs package that automatically provides convenient "modal" key bindings and other tools while in `rectangle-mark-mode` (`C-x SPC`, or `C-M-mouse1` drag, by default).
 
 ## Features
 
 - Single-key [bindings](#key-listing) for all the basic rectangle functions: open, insert string, kill, delete, clear, copy, yank.
-- Restarts by default, so you can continue rectangle actions.
+- Restarts by default, so you can continue actions on the current rectangle.
 - Ability to restore the last rectangle's position, which gets auto-saved.
 - Additional command to _invert the deletion_, i.e. delete the _unmarked columns_ in affected rows, keeping only the marked rectangle on those lines.
-- Change your mind and start a new rectangle from point. 
-- Exposes a useful command (`SPC`) to delete whitespace from the left rectangle boundary.
+- Change your mind and start a new rectangle from point.
+- Delete whitespace from the left rectangle boundary.
 - Column shift: slide the marked rectangle position left or right, 1 (hold shift) or 5 (meta-shift) columns at a time (or any number of columns, with a numerical prefix). 
 - Two-way interaction with Calc: send sums or tables of data into calc, and yank processed matrix data back into the rectangle from the top of calc's stack.
-- Quickly add multiple cursors on each line of the current rectangle.  
+- Quickly add multiple cursors on each line of the current rectangle.
+- Wrap text within the rectangle.
 - A useful help page (`?`). 
 
 ## News
 
+- **v0.5.1**: Improved rectangle shift off ends of lines.
 - **v0.5**: New command `f` to fill (wrap) text in the rectangle.  Use prefix for fill width (defaults to rectangle width).
 - **v0.4**: New command `x` for moving around rectangle corners, and `M` for placing multiple-cursors on each line at the current column.
 
