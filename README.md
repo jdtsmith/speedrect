@@ -29,14 +29,16 @@ Just download, add to path, and arrange to `(require 'speedrect)`.  For users of
 
 ```elisp
 (use-package speedrect
-  :load-path "~/code/emacs/speedrect") ; or wherever
+  :load-path "~/code/emacs/speedrect" ; or wherever
+  :config (speedrect-mode))
 ```
 
 Or, with `use-package` and `straight`:
 
 ```elisp
 (use-package speedrect
-  :straight (speedrect :type git :host github :repo "jdtsmith/speedrect"))
+  :straight (speedrect :type git :host github :repo "jdtsmith/speedrect")
+  :config (speedrect-mode))
 ```
 ## Usage
 
