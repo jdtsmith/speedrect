@@ -225,6 +225,16 @@ inserted text."
        (move-to-column col)
        (mc/edit-lines)))))
 
+(defun speedrect-copy-rectangle-as-text ()
+  "Copy the current rectangle to the kill ring as normal text."
+  (interactive)
+  (let ((rect (apply #'extract-rectangle
+		     (if (< (point) (mark))
+			 (list (point) (mark))
+		       (list (mark) (point))))))
+    (kill-new (string-join rect "\n"))
+    (message "Copied rectangle as %d lines" (length rect))))
+
 (defun speedrect-fill-text (width)
   "Fill text in the rectangle to the given WIDTH."
   (interactive
@@ -279,7 +289,8 @@ inserted text."
 	     "  [c] clear     clear rectangle area by overwriting with spaces\n"
 	     "  [r] rest      delete the rest of the columns, keeping the marked rectangle\n\n"
 	     "Copy/Yank:\n\n"
-	     "  [w] copy      copy rectangle for future yanking\n"
+	     "  [w] copy      copy rectangle for future rectangle yanking\n"
+	     "  [W] copy      copy rectangle to kill ring as normal text\n"
 	     "  [y] yank      yank rectangle, inserting at point\n\n"
 	     "Shift Rectangle (can use numeric prefixes):\n\n"
 	     "  [S-left]      move the rectangle left\n"
@@ -301,8 +312,8 @@ inserted text."
 	     "  [:] down      sum down the columns and grab result in calc\n"
 	     "  [m] yank-mat  yank matrix from top of calc stack, overwriting selected rect\n\n"
 	     "Etc:\n\n"
-	     "  [f] fill text within rectangle (prefix to prompt fill width)\n"
-	     "  [M] multiple-cursors   add cursors at current column\n"
+	     "  [f] fill      fill text within rectangle (prefix to prompt fill width)\n"
+	     "  [M] multiple-cursors  add cursors at current column\n"
 	     "  [?] help      view this Help buffer\n"
 	     "  [q] quit      exit rectangle-mark-mode"))
       (princ l))))
@@ -341,11 +352,17 @@ prior to deactivating mark."
   (cl-loop
    for (key def wrap) in
    '(;; Rectangle basics
-     ("k" kill-rectangle after)    ("t" string-rectangle after)
-     ("o" open-rectangle t)   	   ("w" copy-rectangle-as-kill t)
-     ("y" speedrect-yank-rectangle-dwim t) ("c" clear-rectangle t)
-     ("d" delete-rectangle after)  ("N" rectangle-number-lines t)
-     ("r" speedrect-delete-rest after) ("SPC" delete-whitespace-rectangle t)
+     ("k" kill-rectangle after)
+     ("t" string-rectangle after)
+     ("o" open-rectangle t)
+     ("w" copy-rectangle-as-kill t)
+     ("W" speedrect-copy-rectangle-as-text)
+     ("y" speedrect-yank-rectangle-dwim t)
+     ("c" clear-rectangle t)
+     ("d" delete-rectangle after)
+     ("N" rectangle-number-lines t)
+     ("r" speedrect-delete-rest after)
+     ("SPC" delete-whitespace-rectangle t)
      ("x" rectangle-exchange-point-and-mark)
      ;; Shift rect
      ("S-<right>" speedrect-shift-right)
@@ -357,13 +374,17 @@ prior to deactivating mark."
      ("M-S-<up>" speedrect-shift-up-fast)
      ("M-S-<down>" speedrect-shift-down-fast)
      ;; Calc commands
-     ("_" calc-grab-sum-across) (":" calc-grab-sum-down) ("#" calc-grab-rectangle)
+     ("_" calc-grab-sum-across)
+     (":" calc-grab-sum-down)
+     ("#" calc-grab-rectangle)
      ("m" speedrect-yank-from-calc after)
      ;; Special
-     ("n" speedrect-restart) ("l" speedrect-recall-last)
+     ("n" speedrect-restart)
+     ("l" speedrect-recall-last)
      ("f" speedrect-fill-text after)
      ("M" speedrect-multiple-cursors)
-     ("?" speedrect-transient-map-info) ("q" speedrect-quit))
+     ("?" speedrect-transient-map-info)
+     ("q" speedrect-quit))
    for bind = (if wrap (speedrect--wrap-command def (eq wrap 'after)) def)
    do (define-key rectangle-mark-mode-map (kbd key) bind))
   (put 'rectangle-mark-mode-map 'speedrect t))
