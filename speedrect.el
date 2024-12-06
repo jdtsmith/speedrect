@@ -402,9 +402,7 @@ rectangle after the command runs, otherwise, stash it before."
 		   (current-buffer)))))
 
 (defun speedrect-create-bindings ()
-  "Create the bindings for speedrect.
-Also adds :before advice to rectangle commands to stash the rect
-prior to deactivating mark."
+  "Create the bindings for speedrect."
   (cl-loop
    for (key def wrap) in
    '(;; Rectangle basics
