@@ -196,7 +196,41 @@ RECT (a list of strings)."
 	   minimize (- (length s) (match-beginning 2)) into right
 	   finally return (cons left right)))
 
-;;;; Calc integration
+;;;; Numerical/calc integration
+(defun speedrect--increment-first-number (startcol endcol increment)
+  "Increment the first number in the rectangle line by INCREMENT.
+The rectangle line spans columns from STARTCOL to ENDCOL."
+  (save-excursion
+    (let* ((width (- endcol startcol))
+	   (end (progn (move-to-column startcol)
+		       (min (+ (point) width) (line-end-position)))))
+      (cond
+       ((re-search-forward (rx (* space) "0x" (group (+ xdigit))) end t)
+	(let ((fmt (format "0x%%0%dx" (- (match-end 1) (match-beginning 1))))
+	      (num (string-to-number (match-string-no-properties 1) 16)))
+	  (replace-match (format fmt (+ num increment)))))
+       ((re-search-forward (rx (* space) (group (? (any ?- ?+)) (+ (any "0-9")))) end t)
+        (let* ((txt (match-string-no-properties 1))
+               (prefix (if (= (aref txt 0) ?0) "0" ""))
+               (num (string-to-number txt 10))
+               (fmt (format "%%%s%dd" prefix (length txt))))
+            (replace-match (format fmt (+ num increment)))))))))
+
+(defun speedrect-increment-first-number (start end &optional increment)
+  "Increment the first integer or hexadecimal number in the rectangle.
+The rectangle spans from START to END.  Increment is 1 by
+default, but can be set with INCREMENT."
+  (interactive "r\np")
+  (apply-on-rectangle #'speedrect--increment-first-number
+		      start end (or increment 1)))
+
+(defun speedrect-decrement-first-number (start end &optional decrement)
+  "Decrement the first integer or hexadecimal number in the rectangle.
+The rectangle spans from START to END.  Decrement is 1 by
+default, but can be set with DECREMENT."
+  (interactive "r\np")
+  (speedrect-increment-first-number start end (- (or decrement 1))))
+
 (defun speedrect-yank-from-calc (start end)
   "Yank matrix from top of calc stack, overwriting the marked rectangle.
 START and END are the interactively-defined region beginning and
@@ -209,7 +243,7 @@ minimum of one padding space is preserved on each side of the
 inserted text."
   (interactive "r")
   (if-let* ((rectangle-mark-mode)
-	   (buf (get-buffer "*Calculator*")))
+	    (buf (get-buffer "*Calculator*")))
       (let* ((lines (with-current-buffer buf
 		      (string-lines
 		       (let ((calc-vector-brackets nil)
@@ -228,10 +262,11 @@ inserted text."
 	       (wdth (length (car lines))) ; note: last line may differ
 	       (low (max 0 (1- (car lr))))
 	       (high (min 0 (- (1- (cdr lr))))))
-	  (apply-on-rectangle 'speedrect--replace-with-rect
+	  (apply-on-rectangle #'speedrect--replace-with-rect
 			      start end lines wdth low high)))
     (user-error "Calc rectangle yank not possible here")))
 
+;;* 
 ;;;; Multiple Cursors
 (declare-function mc/edit-lines "mc-edit-lines")
 (defun speedrect-multiple-cursors ()
@@ -327,6 +362,8 @@ Change Rectangle:\n
   [l] last      restore the last used rectangle, if possible\n
 Numerical:\n
   [N] numbers   fill the rectangle with numbers (prefix to set start)
+  [-] decrement decrement the first number (prefix to set decrement)
+  [+/=] increment increment the first number (prefix to set increment)
   [#] grab      grab the rectangle as a matrix in calc
   [_] across    sum across rows and grab result in calc as a vector
   [:] down      sum down the columns and grab result in calc
@@ -392,7 +429,10 @@ prior to deactivating mark."
      ("S-<down>" speedrect-shift-down)
      ("M-S-<up>" speedrect-shift-up-fast)
      ("M-S-<down>" speedrect-shift-down-fast)
-     ;; Calc commands
+     ;; Numerical/Calc commands
+     ("-" speedrect-decrement-first-number after)
+     ("+" speedrect-increment-first-number after)
+     ("=" speedrect-increment-first-number after)
      ("_" calc-grab-sum-across)
      (":" calc-grab-sum-down)
      ("#" calc-grab-rectangle)
