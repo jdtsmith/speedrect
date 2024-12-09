@@ -61,7 +61,7 @@ Use calc, it's super-powerful...
 2. Once you have something you're happy with at the top of calc's *stack* (at the bottom of the `*Calculator*` buffer, entry numbered `1:`), you can:
     - hit `q` (or other window navigation) to return to your original buffer (where `rectangle-mark-mode` will still be active),
     - adjust the position of your rectangle if needed (`S-left/right` and/or `x` is useful for this; a zero-width rectangle is fine), and
-    - hit `m` to yank the latest matrix from calc into the buffer (if it has the right number of rows), replacing the marked rectangle.
+    - hit `m` to yank the latest matrix from the calc stack into the buffer, replacing the marked rectangle.
 
 You don't have to be in the same `mark-rectangle-mode` session to yank a matrix from calc.  As long as the height of your rectangle matches the number of matrix rows, it will just work.  So you can start in one buffer, accumulate a matrix, manipulate it, switch to another buffer, and yank it there.
 
