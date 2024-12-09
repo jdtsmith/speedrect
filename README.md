@@ -1,4 +1,5 @@
 </p> <a href="https://elpa.gnu.org/packages/speedrect.html"><img alt="GNU ELPA" src="https://elpa.gnu.org/packages/speedrect.svg"/></a> 
+
 # SpeedRect
 <img src="https://user-images.githubusercontent.com/93749/223541236-cd77d56c-d1d0-40cd-8d69-f6c12dfe3d3a.png" width=423 align="right">
 
@@ -26,11 +27,12 @@ See the release [NEWS](NEWS.org).
 
 ## Installation
 
-Just download, add to path, and arrange to `(require 'speedrect)`.  For users of `use-package`:
+Install from ELPA, and arrange to `(require 'speedrect)`.  
+
+For users of `use-package`:
 
 ```elisp
 (use-package speedrect
-  :load-path "~/code/emacs/speedrect" ; or wherever
   :config (speedrect-mode))
 ```
 
