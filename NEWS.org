@@ -6,6 +6,7 @@
 
 - Published on ELPA!
 - Added ~copy-rectangle-as-text~. 
+- Permit mismatched calc and rectangle row length. 
 - =BUGFIX= correctly save rectangle after ~delete-rest~. 
 
 * v0.5.2 (2024-12-03)
