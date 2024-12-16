@@ -395,7 +395,7 @@ Whitespace is not preserved."
   (with-help-window "SpeedRect Command Key Help"
     (princ "SpeedRect Rectangle Mark Mode Commands
 ============================================================================\n
-Insertion:
+Insertion:\n
   [o] open      open rectangle with tabs/spaces, shifting text right
   [t] string    replace rectangle with string\n
 Killing:\n
@@ -406,7 +406,7 @@ Killing:\n
   [r] rest      delete the rest of the columns, keeping the marked rectangle\n
 Copy/Yank:\n
   [w] copy      copy rectangle for future rectangle yanking
-  [W] copy      copy rectangle to kill ring as normal text
+  [W] copy-text copy rectangle to kill ring as normal lines of text
   [y] yank      yank rectangle, inserting at point\n
 Shift Rectangle (can use numeric prefixes):\n
   [S-left]      move the rectangle left
@@ -422,13 +422,13 @@ Change Rectangle:\n
   [n] new       start a new rectangle from this location
   [l] last      restore the last used rectangle, if possible\n
 Numerical:\n
-  [N] numbers   fill the rectangle with numbers (prefix to set start)
-  [-] decrement decrement the first number (prefix to set decrement)
+  [N] numbers   fill the rectangle with numeric range (prefix to set start)
   [+/=] increment increment the first number (prefix to set increment)
+  [-] decrement decrement the first number (prefix to set decrement)
   [#] grab      grab the rectangle as a matrix in calc
   [_] across    sum across rows and grab result in calc as a vector
   [:] down      sum down the columns and grab result in calc
-  [m] yank-mat  yank matrix from top of calc stack, overwriting selected rect\n
+  [m] yank-mat  yank matrix from top of calc stack, overwriting selection\n
 Etc:\n
   [f] fill      fill text within rectangle (prefix to prompt fill width)
   [M] multiple-cursors  add cursors at current column
