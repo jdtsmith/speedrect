@@ -193,6 +193,7 @@ full the full rectangle."
   (delete-rectangle-line startcol endcol nil)
   (let ((el (car lines))
 	(w (- width (or from 0) (- (or to 0)))))
+    (move-to-column startcol t)
     (if el
 	(progn
 	  (insert (substring el from (+ width to)))
