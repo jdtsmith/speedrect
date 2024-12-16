@@ -147,6 +147,11 @@ Note that point and mark will not move beyond the end of text on their lines."
   (speedrect-shift-down (- (or lines 5))))
 
 ;;;; Manipulation
+(defun speedrect-undo ()
+  "Undo, temporarily disabling mark."
+  (interactive)
+  (let ((mark-active nil)) (undo)))
+
 (defun speedrect-yank-rectangle-dwim ()
   "Yank rectangle, but first swap mark and point if needed."
   (interactive)
@@ -381,6 +386,7 @@ Numerical:\n
 Etc:\n
   [f] fill      fill text within rectangle (prefix to prompt fill width)
   [M] multiple-cursors  add cursors at current column
+  [u] undo      undo last edit (and restart)
   [?] help      view this Help buffer
   [q] quit      exit rectangle-mark-mode")))
 
@@ -449,6 +455,7 @@ rectangle after the command runs, otherwise, stash it before."
      ("n" speedrect-restart)
      ("l" speedrect-recall-last)
      ("f" speedrect-fill-text after)
+     ("u" speedrect-undo t)
      ("M" speedrect-multiple-cursors)
      ("?" speedrect-transient-map-info)
      ("q" speedrect-quit))
