@@ -2,6 +2,15 @@
 #+author: J.D. Smith
 #+language: en
 
+* Development
+
+- Improve space-padding when incrementing/decrementing numerical columns.
+- Preserve space on kill (=k=) with prefix (i.e. copy then clear).
+- Use last kill rectangle when rectangle filling, if the selected rectangle is entirely blank.
+- Decrement/Increment =-= / =+= commands for adding/subtracting to first numeric column (numeric prefix allowed).
+- Alignment-preserving white-space deletion, from left (default) or right (with prefix) of column.
+- =[BUGFIX]= Avoid rare alignment issues in ~yank-from-calc~.
+
 * v0.6 (2024-12-07)
 
 - Published on ELPA!
@@ -17,9 +26,9 @@
 
 * v0.5
 
-- New command ~f~ to fill (wrap) text in the rectangle. Uses prefix for fill width (defaults to rectangle width).
+- New command =f= to fill (wrap) text in the rectangle. Uses prefix for fill width (defaults to rectangle width).
 
 * v0.4
 
-- New command ~x~ for moving around rectangle corners.
-- New command ~M~ for placing multiple-cursors on each line at the current column.
+- New command =x= for moving around rectangle corners.
+- New command =M= for placing multiple-cursors on each line at the current column.
