@@ -152,6 +152,16 @@ Note that point and mark will not move beyond the end of text on their lines."
   (interactive)
   (let ((mark-active nil)) (undo)))
 
+(defun speedrect-kill-rectangle (start end &optional preserve-width)
+  "Kill rectangle between START and END.
+If PRESERVE-WIDTH is non-nil, preserves width."
+  (interactive "*r\nP")
+  (if preserve-width
+      (progn
+	(copy-rectangle-as-kill start end)
+	(clear-rectangle start end))
+    (kill-rectangle start end)))
+
 (defun speedrect-yank-rectangle-dwim ()
   "Yank rectangle, but first swap mark and point if needed."
   (interactive)
@@ -378,7 +388,7 @@ Insertion:
   [o] open      open rectangle with tabs/spaces, shifting text right
   [t] string    replace rectangle with string\n
 Killing:\n
-  [k] kill      kill and save rectangle for yanking
+  [k] kill      kill and save rectangle for yanking (keep space, with prefix)
   [d] delete    kill rectangle without saving
   [SPC] del-ws  delete all whitespace from left (right, with prefix)
   [c] clear     clear rectangle area by overwriting with spaces
@@ -447,7 +457,7 @@ rectangle after the command runs, otherwise, stash it before."
   (cl-loop
    for (key def wrap) in
    '(;; Rectangle basics
-     ("k" kill-rectangle after)
+     ("k" speedrect-kill-rectangle t)
      ("t" string-rectangle after)
      ("o" open-rectangle t)
      ("w" copy-rectangle-as-kill t)
