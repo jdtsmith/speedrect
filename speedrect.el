@@ -341,7 +341,11 @@ inserted text."
     (message "Copied rectangle as %d lines" (length rect))))
 
 (defun speedrect-fill-text (width)
-  "Fill text in the rectangle to the given WIDTH."
+  "Fill text in the selected rectangle to the given WIDTH.
+WIDTH defaults to the selected rectangle's width, but can be set
+with numeric prefix arg.  If the marked rectangle is entirely
+blank, yank and fill the last killed rectangle instead.
+Whitespace is not preserved."
   (interactive
    (list (cond ((null current-prefix-arg)
 		(car (rectangle-dimensions (point) (mark))))
@@ -350,17 +354,23 @@ inserted text."
 	       (t (prefix-numeric-value current-prefix-arg)))))
   (when (<= width 0) (user-error "Fill width must be >0"))
   (with-undo-amalgamate
-    (let ((height (cdr (rectangle-dimensions (point) (mark))))
-	  (rect (apply #'delete-extract-rectangle
-		       (if (< (point) (mark))
-			   (list (point) (mark))
-			 (list (mark) (point)))))
-	  filled-height)
+    (let* ((height (cdr (rectangle-dimensions (point) (mark))))
+	   (rect (delete-extract-rectangle (region-beginning) (region-end)))
+	   (blankp (cl-every
+		    (lambda (l) (string-match-p (rx bos (* space) eos) l))
+		    rect))
+	   filled-height)
       (with-temp-buffer
-	(dolist (line rect) (insert line " "))
-	(let ((fill-column (point-max)))
+	(if blankp
+	    (progn
+	      (yank-rectangle)
+	      (goto-char (point-min))
+	      (when (skip-syntax-forward " " (line-end-position))
+		(delete-region (point-min) (point))))
+	  (dolist (line rect) (insert (string-trim line) " \n")))
+	(let ((fill-column (point-max))) ; unfill
 	  (fill-region (point-min) (point-max)))
-	(let ((fill-column width))
+	(let ((fill-column width))	; fill@width
 	  (fill-region (point-min) (point-max) nil 'nosqueeze))
 	(goto-char (point-min))
 	(set-mark (point))
