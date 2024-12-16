@@ -46,6 +46,70 @@ Or, with `use-package` and `straight`:
 
 Start `rectangle-mark-mode` as usual (`C-x SPC`, by default).  Hit `?` to summon a help buffer of available key bindings.  By default most commands restart `rectangle-mark-mode`; `q` (or any other non-shortcut command) to exit.  If you'd prefer speedrect commands not to continue in this way, set `speedrect-continue=nil`.
 
+## Commands
+
+Current single keystroke bindings (available from `?`):
+
+```
+SpeedRect Rectangle Mark Mode Commands
+============================================================================
+
+Insertion:
+
+  [o] open      open rectangle with tabs/spaces, shifting text right
+  [t] string    replace rectangle with string
+  
+Killing:
+
+  [k] kill      kill and save rectangle for yanking (keep space, with prefix)
+  [d] delete    kill rectangle without saving
+  [SPC] del-ws  delete all whitespace from left (right, with prefix)
+  [c] clear     clear rectangle area by overwriting with spaces
+  [r] rest      delete the rest of the columns, keeping the marked rectangle
+  
+Copy/Yank:
+
+  [w] copy      copy rectangle for future rectangle yanking
+  [W] copy-text copy rectangle to kill ring as normal lines of text
+  [y] yank      yank rectangle, inserting at point
+  
+Shift Rectangle (can use numeric prefixes):
+
+  [S-left]      move the rectangle left
+  [S-right]     move the rectangle right
+  [S-up]        move the rectangle up
+  [S-down]      move the rectangle down
+  [M-S-left]    move the rectangle left 5 columns
+  [M-S-right]   move the rectangle right 5 columns
+  [M-S-up]      move the rectangle up 5 lines
+  [M-S-down]    move the rectangle down 5 lines
+  
+Change Rectangle:
+
+  [x] corners   move point around corners of the rectangle
+  [n] new       start a new rectangle from this location
+  [l] last      restore the last used rectangle, if possible
+  
+Numerical:
+
+  [N] numbers   fill the rectangle with numeric range (prefix to set start)
+  [+/=] increment increment the first number (prefix to set increment)
+  [-] decrement decrement the first number (prefix to set decrement)
+  [#] grab      grab the rectangle as a matrix in calc
+  [_] across    sum across rows and grab result in calc as a vector
+  [:] down      sum down the columns and grab result in calc
+  [m] yank-mat  yank matrix from top of calc stack, overwriting selection
+  
+Etc:
+
+  [f] fill      fill text within rectangle (prefix to prompt fill width)
+  [M] multiple-cursors  add cursors at current column
+  [u] undo      undo last edit (and restart)
+  [?] help      view this Help buffer
+  [q] quit      exit rectangle-mark-mode
+```
+
+Note that as mentioned many commands can be modified with a prefix (e.g. `M-10 S-right` or `C-u k`).
 
 ## Hints
 
