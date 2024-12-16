@@ -201,6 +201,31 @@ RECT (a list of strings)."
 	   minimize (- (length s) (match-beginning 2)) into right
 	   finally return (cons left right)))
 
+(defun speedrect--delete-ws-line (start end right)
+  "Delete left whitespace on line between columns START and END, preserving width.
+If RIGHT is non-nil, delete from right."
+  (let* ((delete-from (if right end start))
+	 (pad-at (if right start end))
+	 (guard (if right (line-beginning-position) (line-end-position)))
+	 (skip-fn (if right 'skip-syntax-backward 'skip-syntax-forward)))
+    (when (and (= (move-to-column delete-from t) delete-from) (/= (point) guard))
+      (let* ((beg (point))
+	     (end (progn (funcall skip-fn " " guard) (point)))
+	     (trim-len (abs (- beg end)))
+	     (pad-col (if right pad-at (- pad-at trim-len))))
+	(message "Trimming from %d:%d %d->%d [%d]"
+		 delete-from pad-at beg end trim-len)
+	(delete-region beg end)
+	(when (and (> trim-len 0) (= (move-to-column pad-col t) pad-col))
+	  (insert (make-string trim-len ?\s)))))))
+
+(defun speedrect--delete-ws (start end &optional right)
+  "Delete left whitespace within rectangle with corners START and END.
+With prefix or non-nil RIGHT, delete whitespace from right-hand
+side instead."
+  (interactive "*r\nP")
+  (apply-on-rectangle #'speedrect--delete-ws-line start end right))
+
 ;;;; Numerical/calc integration
 (defun speedrect--increment-first-number (startcol endcol increment)
   "Increment the first number in the rectangle line by INCREMENT.
@@ -355,7 +380,7 @@ Insertion:
 Killing:\n
   [k] kill      kill and save rectangle for yanking
   [d] delete    kill rectangle without saving
-  [SPC] del-ws  delete all whitespace, starting from left column
+  [SPC] del-ws  delete all whitespace from left (right, with prefix)
   [c] clear     clear rectangle area by overwriting with spaces
   [r] rest      delete the rest of the columns, keeping the marked rectangle\n
 Copy/Yank:\n
@@ -432,7 +457,7 @@ rectangle after the command runs, otherwise, stash it before."
      ("d" delete-rectangle after)
      ("N" rectangle-number-lines t)
      ("r" speedrect-delete-rest after)
-     ("SPC" delete-whitespace-rectangle t)
+     ("SPC" speedrect--delete-ws after)
      ("x" rectangle-exchange-point-and-mark)
      ;; Shift rect
      ("S-<right>" speedrect-shift-right)
