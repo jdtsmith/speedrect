@@ -13,7 +13,7 @@
 - Ability to restore the last rectangle's position, which gets auto-saved.
 - Lots of additional rectangle commands: e.g. delete the _unmarked columns_ in affected rows.
 - Change your mind and start a new rectangle from point.
-- Delete whitespace from the left rectangle boundary.
+- Delete whitespace from the rectangle boundaries to left or right-align the data.
 - Column shift: slide the marked rectangle position left or right, 1 (hold shift) or 5 (meta-shift) columns at a time (or any number of columns, with a numerical prefix).
 - Quickly enter numeric columns.
 - Increment/decrement selected numbers.
