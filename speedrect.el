@@ -58,6 +58,8 @@ Stored as (POINT-LINE POINT-COL MARK-LINE MARK-COL), where ....")
 (defun speedrect-recall-last ()
   "Restore last saved rectangle position."
   (interactive)
+  (unless rectangle-mark-mode
+    (rectangle-mark-mode 1))
   (pcase speedrect-last
     (`((,point . ,mark) ,point-crutches ,mark-crutches)
      (set-mark (marker-position mark))
