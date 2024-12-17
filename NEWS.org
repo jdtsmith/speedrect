@@ -15,7 +15,7 @@
 - New decrement/increment commands (=-= / =+=) for adding/subtracting to first numeric column (numeric prefix allowed).
 - Alignment-preserving white-space deletion, for left (default) or right (with prefix) justification of column.
 - New undo command (=u=) to undo last action, preserving the selected rectangle.
-- =[BUGFIX]= Avoid rare alignment issues when using ~yank-from-calc~ (=m=).
+- =BUGFIX= Avoid rare alignment issues when using ~yank-from-calc~ (=m=).
 
 * v0.6 (2024-12-07)
 
