@@ -1,12 +1,17 @@
+
+
 # SpeedRect
 <a href="https://elpa.gnu.org/packages/speedrect.html"><img alt="GNU ELPA" src="https://elpa.gnu.org/packages/speedrect.svg"/></a> 
-<img src="https://user-images.githubusercontent.com/93749/223541236-cd77d56c-d1d0-40cd-8d69-f6c12dfe3d3a.png" width=423 align="right">
 
-Quick key bindings and other tools for Emacs' `rectangle-mark-mode`.
+Quick key bindings and other tools for Emacs' `rectangle-mark-mode` 
 
+  
 `SpeedRect` is a small Emacs package that automatically provides convenient "modal" key bindings and other tools while in `rectangle-mark-mode` (`C-x SPC`, or `C-M-mouse1` drag, by default).
 
+
+
 ## Features
+<img width="625" alt="image" align="right" src="https://github.com/user-attachments/assets/adcea492-cd51-4123-b5aa-7f0f31eb1029" />
 
 - Single-key [bindings](#key-listing) for all the basic rectangle functions: open, insert string, kill, delete, clear, copy, yank.
 - Restarts by default, so you can continue actions on the current rectangle.
@@ -19,6 +24,12 @@ Quick key bindings and other tools for Emacs' `rectangle-mark-mode`.
 - Quickly add multiple cursors on each line of the current rectangle.
 - Wrap text within the rectangle.
 - A useful help page (`?`). 
+
+## Demo
+<details>
+<summary>Demo of speedrect's key features</summary>
+<video src='https://github.com/user-attachments/assets/4cc4a1ed-1d29-48b2-a365-2d39ef531d80'/></video>
+</details>
 
 ## What's New
 
