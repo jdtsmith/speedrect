@@ -8,7 +8,7 @@
 ## Features
 <img width="625" alt="image" align="right" src="https://github.com/user-attachments/assets/adcea492-cd51-4123-b5aa-7f0f31eb1029" /> 
 
-- Single-key [bindings](#key-listing) for all the basic rectangle functions: open, insert string, kill, delete, clear, copy, yank.
+- Single-key [bindings](#commands) for all the basic rectangle functions: open, insert string, kill, delete, clear, copy, yank.
 - Restarts by default, so you can continue actions on the current rectangle.
 - Ability to restore the last rectangle's position, which gets auto-saved.
 - Additional command to _invert the deletion_, i.e. delete the _unmarked columns_ in affected rows, keeping only the marked rectangle on those lines.
