@@ -2,21 +2,27 @@
 #+author: J.D. Smith
 #+language: en
 
-* Development
+* v0.7 (2024-12-17)
 
-- Improve space-padding when incrementing/decrementing numerical columns.
-- Preserve space on kill (=k=) with prefix (i.e. copy then clear).
-- Use last kill rectangle when rectangle filling, if the selected rectangle is entirely blank.
-- Decrement/Increment =-= / =+= commands for adding/subtracting to first numeric column (numeric prefix allowed).
-- Alignment-preserving white-space deletion, from left (default) or right (with prefix) of column.
-- =[BUGFIX]= Avoid rare alignment issues in ~yank-from-calc~.
+- Added demo movie.
+- Automatically recall stashed rectangle when multiple cursors mode (=M=) completes.
+- Stash rectangle prior to quitting.
+- Optionally preserve space on kill (=k=) when called with prefix (i.e. copy then clear).
+- When rectangle filling text, if the selected rectangle is entirely blank, use the contents of the last killed rectangle.  This makes possible a two-step process for rectangle filling:
+  1. kill/copy a rectangle
+  2. mark a blank rectangular "target" region, and yank-fill to that width.
+- Other minor rectangle fill improvements to add stability.
+- New decrement/increment commands (=-= / =+=) for adding/subtracting to first numeric column (numeric prefix allowed).
+- Alignment-preserving white-space deletion, for left (default) or right (with prefix) justification of column.
+- New undo command (=u=) to undo last action, preserving the selected rectangle.
+- =[BUGFIX]= Avoid rare alignment issues when using ~yank-from-calc~ (=m=).
 
 * v0.6 (2024-12-07)
 
-- Published on ELPA!
-- Added ~copy-rectangle-as-text~. 
-- Permit mismatched calc and rectangle row length. 
-- =BUGFIX= correctly save rectangle after ~delete-rest~. 
+- Published on ELPA.
+- Added ~copy-rectangle-as-text~ to put yankable lines of text on the kill ring.
+- Permit mismatched calc matrix and selected rectangle row length.
+- =BUGFIX= correctly save rectangle position after ~delete-rest~.
 
 * v0.5.2 (2024-12-03)
 
