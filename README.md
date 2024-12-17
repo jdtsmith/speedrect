@@ -11,13 +11,15 @@
 - Single-key [bindings](#commands) for all the basic rectangle functions: open, insert string, kill, delete, clear, copy, yank.
 - Restarts by default, so you can continue actions on the current rectangle.
 - Ability to restore the last rectangle's position, which gets auto-saved.
-- Additional command to _invert the deletion_, i.e. delete the _unmarked columns_ in affected rows, keeping only the marked rectangle on those lines.
+- Lots of additional rectangle commands: e.g. delete the _unmarked columns_ in affected rows.
 - Change your mind and start a new rectangle from point.
 - Delete whitespace from the left rectangle boundary.
-- Column shift: slide the marked rectangle position left or right, 1 (hold shift) or 5 (meta-shift) columns at a time (or any number of columns, with a numerical prefix). 
-- Two-way interaction with Calc: send sums or tables of data into calc, and yank processed matrix data back into the rectangle from the top of calc's stack.
-- Quickly add multiple cursors on each line of the current rectangle.
-- Wrap text within the rectangle.
+- Column shift: slide the marked rectangle position left or right, 1 (hold shift) or 5 (meta-shift) columns at a time (or any number of columns, with a numerical prefix).
+- Quickly enter numeric columns.
+- Increment/decrement selected numbers.
+- Two-way interaction with Calc: send sums or tables of data into calc, and yank processed matrix data back into the rectangle from the top of calc's stack. Calc can do _anything_.
+- Quickly add multiple cursors on each line of the current rectangle, and return to it when finished.
+- Flexibly wrap text within the rectangle.
 - A useful help page (`?`). 
 
 ## Demo
