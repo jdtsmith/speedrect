@@ -436,6 +436,7 @@ Etc:\n
 (defun speedrect-quit ()
   "Quit speedrect."
   (interactive)
+  (speedrect-stash)
   (deactivate-mark))
 
 (defun speedrect--wrap-command (command &optional after)
