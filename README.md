@@ -73,7 +73,7 @@ Use calc, it's super-powerful...
     - adjust the position of your rectangle if needed (`S-left/right` and/or `x` is useful for this; a zero-width rectangle is fine), and
     - hit `m` to yank the latest matrix from the calc stack into the buffer, replacing the marked rectangle.
 
-You don't have to be in the same `mark-rectangle-mode` session to yank a matrix from calc.  As long as the height of your rectangle matches the number of matrix rows, it will just work.  So you can start in one buffer, accumulate a matrix, manipulate it, switch to another buffer, and yank it there.
+You don't have to be in the same `rectangle-mark-mode` session you sent data from to yank a matrix from calc.  As long as the height of your rectangle matches the number of matrix rows, it will just work (or even if not, you'll get a warning).  So you can start in one buffer, accumulate a matrix, manipulate it, switch to another buffer, and yank it there.
 
 > [!NOTE]
 > What you see is what you get in calc.  The numbers shown in calc will be yanked as they appear on the stack, except `speedrect` automatically omits brackets and expands `...` vector shortening.  `v ,` will remove commas for a cleaner appearance.  `v >` will right align numbers.  `d f` will let you set the number of digits after the decimal.  And _many_ more numerical formatting options. 
