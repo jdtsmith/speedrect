@@ -163,9 +163,11 @@ If PRESERVE-WIDTH is non-nil, preserves width."
     (kill-rectangle start end)))
 
 (defun speedrect-yank-rectangle-dwim ()
-  "Yank rectangle, but first swap mark and point if needed."
+  "Yank rectangle, but first swap mark and point if needed.
+Any selected rectangle is first deleted."
   (interactive)
   (if (< (mark) (point)) (exchange-point-and-mark))
+  (delete-rectangle (point) (mark))
   (call-interactively #'yank-rectangle))
 
 (defun speedrect-copy-rectangle-dwim ()
