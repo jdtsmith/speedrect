@@ -443,19 +443,23 @@ Many/most rectangle commands deactivate mark and exit
 commands, and, if custom option `speedrect-continue' is non-nil,
 restarts with the same rectangle.  If AFTER is non-nil, stash the
 rectangle after the command runs, otherwise, stash it before."
-  (lambda ()
-    (interactive)
-    (unless after (speedrect-stash))
-    (call-interactively command)
-    (when after (speedrect-stash))
-    (when speedrect-continue
-      (run-at-time 0 nil
-		   (lambda (buf)
-		     (with-current-buffer buf
-		       (activate-mark)
-		       (rectangle-mark-mode 1)
-		       (speedrect-recall-last)))
-		   (current-buffer)))))
+  (let ((func
+	 (lambda ()
+	   (interactive)
+	   (unless after (speedrect-stash))
+	   (call-interactively command)
+	   (when after (speedrect-stash))
+	   (when speedrect-continue
+	     (run-at-time 0 nil
+			  (lambda (buf)
+			    (with-current-buffer buf
+			      (activate-mark)
+			      (rectangle-mark-mode 1)
+			      (speedrect-recall-last)))
+			  (current-buffer)))))
+	(name (intern (concat (symbol-name command) "--speedrect_wrap"))))
+    (defalias name func)
+    name))
 
 (defun speedrect-create-bindings ()
   "Create the bindings for speedrect."
