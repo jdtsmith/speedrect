@@ -343,52 +343,44 @@ inserted text."
     (kill-new (string-join rect "\n"))
     (message "Copied rectangle as %d lines" (length rect))))
 
-(defun speedrect-fill-text (width)
-  "Fill text in the selected rectangle to the given WIDTH.
+(defun speedrect-fill-text (start end &optional width)
+  "Fill text in the selected rectangle START..END to the given WIDTH.
 WIDTH defaults to the selected rectangle's width, but can be set
 with numeric prefix arg.  If the marked rectangle is entirely
 blank, yank and fill the last killed rectangle instead.
 Whitespace is not preserved."
-  (interactive
-   (list (cond ((null current-prefix-arg)
-		(car (rectangle-dimensions (point) (mark))))
-	       ((consp current-prefix-arg)
-		(read-number "Fill width: "))
-	       (t (prefix-numeric-value current-prefix-arg)))))
+  (interactive "*r")
+  (unless width
+    (setq width (cond ((null current-prefix-arg)
+		       (car (rectangle-dimensions start end)))
+		      ((consp current-prefix-arg)
+		       (read-number "Fill width: "))
+		      (t (prefix-numeric-value current-prefix-arg)))))
   (when (<= width 0) (user-error "Fill width must be >0"))
   (with-undo-amalgamate
-    (let* ((height (cdr (rectangle-dimensions (point) (mark))))
-	   (rect (delete-extract-rectangle (region-beginning) (region-end)))
+    (let* ((height (cdr (rectangle-dimensions start end)))
+	   (rect (extract-rectangle start end))
 	   (blankp (cl-every
 		    (lambda (l) (string-match-p (rx bos (* space) eos) l))
 		    rect))
-	   filled-height)
+	   (formatter (apply-partially #'format (format "%%-%ds" width)))
+	   lines)
       (with-temp-buffer
 	(if blankp
-	    (progn
-	      (yank-rectangle)
-	      (goto-char (point-min))
-	      (when (skip-syntax-forward " " (line-end-position))
-		(delete-region (point-min) (point))))
-	  (dolist (line rect) (insert (string-trim line) " \n")))
-	(let ((fill-column (point-max))) ; unfill
-	  (fill-region (point-min) (point-max)))
+	    (yank-rectangle)
+	  (insert (string-trim (string-join rect " "))))
 	(let ((fill-column width))	; fill@width
-	  (fill-region (point-min) (point-max) nil 'nosqueeze))
-	(goto-char (point-min))
-	(set-mark (point))
-	(goto-char (point-max))
-	(beginning-of-line)
-	(setq filled-height (line-number-at-pos))
-	(rectangle-forward-char width)
-	(speedrect-copy-rectangle-dwim))
-      (when (< height filled-height)
+	  (fill-region (point-min) (point-max)))
+	(setq lines (mapcar formatter (string-lines (buffer-string)))))
+      (when (< height (length lines))
 	(save-excursion
-	  (when (> (mark) (point))
-	    (goto-char (mark)))
+	  (when (> end start)
+	    (goto-char end))
 	  (end-of-line)
-	  (open-line (- filled-height height))))
-      (speedrect-yank-rectangle-dwim))))
+	  (open-line (- (length lines) height))))
+      (delete-rectangle start end t)
+      (when (> (point) (mark)) (exchange-point-and-mark))
+      (insert-rectangle lines))))
 
 ;;;; Help
 (defun speedrect-transient-map-info ()
