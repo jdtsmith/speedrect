@@ -323,6 +323,14 @@ inserted text."
 
 ;;* 
 ;;;; Multiple Cursors
+(defun speedrect--mc-restart ()
+  "Restart speedrect with stored rectangle.
+Also removes itself from `multiple-cursors-mode-hook'."
+  (unless multiple-cursors-mode
+    (remove-hook 'multiple-cursors-mode-hook
+		 #'speedrect--mc-restart t) 
+    (speedrect-recall-last)))
+
 (declare-function mc/edit-lines "mc-edit-lines")
 (defun speedrect-multiple-cursors ()
   "Add multiple cursors on each line at the current column."
@@ -332,7 +340,9 @@ inserted text."
     (error (user-error "Multiple-cursors not found"))
     (:success
      (let ((col (current-column)))
-       (speedrect-stash)
+       (speedrect-quit)
+       (add-hook 'multiple-cursors-mode-hook
+		 #'speedrect--mc-restart nil t)
        (exchange-point-and-mark)
        (move-to-column col)
        (mc/edit-lines)))))
