@@ -17,7 +17,7 @@
 - Column shift: slide the marked rectangle position left or right, 1 (hold shift) or 5 (meta-shift) columns at a time (or any number of columns, with a numerical prefix).
 - Quickly enter numeric columns.
 - Increment/decrement selected numbers.
-- Two-way interaction with Calc: send sums or tables of data into calc, and yank processed matrix data back into the rectangle from the top of calc's stack. Calc can do _anything_.
+- Two-way interaction with `calc`: send sums or tables of data into `calc`, and yank processed matrix data back into the rectangle from the top of `calc`'s stack. `Calc` can do _anything_.
 - Quickly add multiple cursors on each line of the current rectangle, and return to it when finished.
 - Flexibly wrap text within the rectangle.
 - A useful help page (`?`). 
