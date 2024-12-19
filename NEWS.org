@@ -2,6 +2,12 @@
 #+author: J.D. Smith
 #+language: en
 
+
+* Development
+
+- New ~fill-text-from-kill-ring~ command (=F=) for filling a rectangle from text on the kill ring.
+
+
 * v0.7 (2024-12-17)
 
 - Added demo movie.
