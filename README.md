@@ -40,6 +40,7 @@ For users of `use-package`:
 
 ```elisp
 (use-package speedrect
+  :demand t ; if you use use-package-always-defer=t
   :config (speedrect-mode))
 ```
 
