@@ -18,7 +18,7 @@
 - Quickly enter numeric columns.
 - Increment/decrement selected numbers.
 - Two-way interaction with `calc`: send sums or tables of data into `calc`, and yank processed matrix data back into the rectangle from the top of `calc`'s stack. `Calc` can do _anything_.
-- Quickly add multiple cursors on each line of the current rectangle, and return to it when finished.
+- Quickly add [multiple cursors](https://github.com/magnars/multiple-cursors.el) on each line of the current rectangle, and return to it when finished.
 - Flexibly wrap text within the rectangle.
 - A useful help page (`?`). 
 
