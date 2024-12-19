@@ -355,12 +355,13 @@ Also removes itself from `multiple-cursors-mode-hook'."
     (kill-new (string-join rect "\n"))
     (message "Copied rectangle as %d lines" (length rect))))
 
-(defun speedrect-fill-text (start end &optional width)
+(defun speedrect-fill-text (start end &optional width yank)
   "Fill text in the selected rectangle START..END to the given WIDTH.
 WIDTH defaults to the selected rectangle's width, but can be set
 with numeric prefix arg.  If the marked rectangle is entirely
 blank, yank and fill the last killed rectangle instead.
-Whitespace is not preserved."
+Whitespace is not preserved.  If YANK is non-nil, do this even if
+the marked rectangle is not entirely blank."
   (interactive "*r")
   (unless width
     (setq width (cond ((null current-prefix-arg)
@@ -378,7 +379,7 @@ Whitespace is not preserved."
 	   (formatter (apply-partially #'format (format "%%-%ds" width)))
 	   lines)
       (with-temp-buffer
-	(if blankp
+	(if (or yank blankp)
 	    (yank-rectangle)
 	  (insert (string-trim (string-join rect " "))))
 	(let ((fill-column width))	; fill@width
@@ -393,6 +394,16 @@ Whitespace is not preserved."
       (delete-rectangle start end t)
       (when (> (point) (mark)) (exchange-point-and-mark))
       (insert-rectangle lines))))
+
+(defun speedrect-fill-text-from-kill-ring (start end &optional width)
+  "Fill text within rectangle, from kill ring.
+Argument START, END, and WIDTH are as in `speedrect-fill-text'."
+  (interactive "*r")
+  (if-let ((kill (current-kill 0 t)))
+      (progn
+	(setq killed-rectangle (list kill))
+	(speedrect-fill-text start end width kill))
+    (warn "Nothing on kill-ring.")))
 
 ;;;; Help
 (defun speedrect-transient-map-info ()
@@ -437,6 +448,7 @@ Numerical:\n
   [m] yank-mat  yank matrix from top of calc stack, overwriting selection\n
 Etc:\n
   [f] fill      fill text within rectangle (prefix to prompt fill width)
+  [F] fill-yank fill text yanked from the kill ring within rectangle
   [M] multiple-cursors  add cursors at current column
   [u] undo      undo last edit (and restart)
   [?] help      view this Help buffer
@@ -512,6 +524,7 @@ rectangle after the command runs, otherwise, stash it before."
      ("n" speedrect-restart)
      ("l" speedrect-recall-last)
      ("f" speedrect-fill-text after)
+     ("F" speedrect-fill-text-from-kill-ring after)
      ("u" speedrect-undo t)
      ("M" speedrect-multiple-cursors)
      ("?" speedrect-transient-map-info)
