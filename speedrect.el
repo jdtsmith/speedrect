@@ -323,6 +323,7 @@ inserted text."
 
 ;;* 
 ;;;; Multiple Cursors
+(defvar multiple-cursors-mode)
 (defun speedrect--mc-restart ()
   "Restart speedrect with stored rectangle.
 Also removes itself from `multiple-cursors-mode-hook'."
