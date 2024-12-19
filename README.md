@@ -103,7 +103,7 @@ Option 4. `F` is useful if you want to:
 For Option 2 `f`, if you want to _reduce_ the width of an existing filled rectangle, use a prefix to specify it numerically.
 
 >[!NOTE]
->When filling rectangle, the _height_ of the rectangle marked for filling is significant.  It indicates to `speedrect` that the fill box can safely extend that far down without disturbing other rows of data.  It's normal to mark the full range down to the next row.  If more rows are needed, `speedrect` will add blank lines.
+>When filling rectangle, the _height_ of the rectangle marked for filling is significant.  It indicates to `speedrect` that the fill box can safely extend that far down without disturbing other rows of data.  It's normal to mark the full range down to the next row.  If more rows are needed, `speedrect` will add blank lines below to avoid disturbing subsequent rows of data.
 
 
 
