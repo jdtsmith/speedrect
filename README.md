@@ -57,26 +57,55 @@ Start `rectangle-mark-mode` as usual (`C-x SPC`, by default).  Hit `?` to summon
 
 Note that as mentioned many commands can be modified with a prefix (e.g. `M-10 S-right` or `C-u k`).
 
-## Hints
+## Details and tips
 
-A rectangle is just a _region_ (point and mark), specially interpreted.  While marking rectangles, you can use `x` to cycle point among any of the rectangles four corners.  This is useful to make changes to the appropriate side of the selected region.
+### What is a rectangle to Emacs?
 
-Use calc, it's super-powerful...
+A rectangle is just a _region_ (point and mark), _specially interpreted_, with a few extra pieces of information to allow the corners of the rectangle to go where point cannot (inside tabs, beyond the ends of lines, etc.).  While marking rectangles, you can use `x` to cycle point among any of the rectangle's four corners.  This can be very helpful to make changes on the appropriate side.
 
 ### Using Calc
 
-[Calc](https://www.gnu.org/software/emacs/manual/html_mono/calc.html) is an ancient and powerful calculator in emacs with many capabilities, including operating on [matrix data](https://www.gnu.org/software/emacs/manual/html_node/calc/Matrix-Tutorial.html).  In addition to simple sums, `SpeedRect` offers powerful two-way communication with calc for sending in and yanking out columns of numerical data:
+>[!TIP]
+> Use `calc`, it's super-powerful...
 
-1. It can send columns of numbers to calc as a _matrix_ (2D array of numbers).  Once in calc, you can operate on those numbers using a wide array of operations.  Many things "just work" on matrices (e.g. `1 +` will add one to all the numbers).  Others can easily be mapped over matrix elements (e.g. try `v M Q` to map `sqrt` over all elements). You can combine columns, change their order, and _much_ more.
-2. Once you have something you're happy with at the top of calc's *stack* (at the bottom of the `*Calculator*` buffer, entry numbered `1:`), you can:
+[`Calc`](https://www.gnu.org/software/emacs/manual/html_mono/calc.html) is an ancient and powerful calculator in emacs with many capabilities, including operating on [matrix data](https://www.gnu.org/software/emacs/manual/html_node/calc/Matrix-Tutorial.html).  In addition to simple sums, `speedRect` offers powerful _two-way_ communication with `calc` for sending in and yanking out columns of numerical data:
+
+1. It can send columns of numbers to calc as a _matrix_ (2D array of numbers).  Once in `calc`, you can operate on those numbers using a wide array of operations.  Many things "just work" on matrices (e.g. `1 +` will add one to all the numbers).  Others can easily be mapped over matrix elements (e.g. try `v M Q` to map `sqrt` over all elements). You can combine columns, change their order, transpose matrices, add them, and _much_ more.
+2. Once you have something you're happy with at the top of `calc`'s *stack* (which shows up at the bottom of the `*Calculator*` buffer, entry numbered `1:`), you can:
     - hit `q` (or other window navigation) to return to your original buffer (where `rectangle-mark-mode` will still be active),
     - adjust the position of your rectangle if needed (`S-left/right` and/or `x` is useful for this; a zero-width rectangle is fine), and
-    - hit `m` to yank the latest matrix from the calc stack into the buffer, replacing the marked rectangle.
+    - hit `m` to yank the latest matrix from the `calc` stack into the buffer, replacing the marked rectangle.
 
-You don't have to be in the same `rectangle-mark-mode` session you sent data from to yank a matrix from calc.  As long as the height of your rectangle matches the number of matrix rows, it will just work (or even if not, you'll get a warning).  So you can start in one buffer, accumulate a matrix, manipulate it, switch to another buffer, and yank it there.
+You don't have to be in the same `rectangle-mark-mode` session you sent data from to yank a matrix from `calc`.  As long as the height of your rectangle matches the number of matrix rows, it will just work (and even if not, you'll just get a warning).  So you can start in one buffer, accumulate a matrix, manipulate it, switch to another buffer, and yank it there.
 
 > [!NOTE]
-> What you see is what you get in calc.  The numbers shown in calc will be yanked as they appear on the stack, except `speedrect` automatically omits brackets and expands `...` vector shortening.  `v ,` will remove commas for a cleaner appearance.  `v >` will right align numbers.  `d f` will let you set the number of digits after the decimal.  And _many_ more numerical formatting options. 
+> What you see is what you get in `calc`.  The numbers shown in `calc` will be yanked _as they appear_ on the stack, except `speedrect` automatically omits brackets and expands any `...` vector shortening enabled.  `v ,` will remove commas for a cleaner appearance.  `v >` will right align numbers.  `d f` will let you set the number of digits after the decimal.  And _many_ more numerical formatting options. 
+
+### Filling text within rectangles
+
+There are several ways to "fill" content within a rectangle:
+
+1. `f`: if the marked rectangle is entirely blank, use the last yanked rectangle's contents, filled up to the width of the marked rectangle.
+1. `f`: if the marked rectangle is _not_ blank, use its contents, filling to the width of the rectangle.
+1. `C-u f` or `M-N f` (where `N` is the number of chars wide): use the contents of either the last killed rectangle or the currently marked rectangle to fill to the specified width.
+1. `F`: same as above, except use the currently copied text on the kill ring as the text to fill.  
+
+Option 1 `f` is very useful if you want to fill in two steps:
+
+1. Mark a rectangular chunk of text and kill it (`k` or `C-u k`, to leave the space it occupies intact), and then
+2. Mark out a blank region and fill the prior rectangle's text there.
+
+Option 4. `F` is useful if you want to:
+
+1. Quickly kill some text in a buffer the normal way, e.g. `C-w`, or even take from the system clipboard, then
+2. Fill that text directly into a marked rectangle.  The contents of the marked rectangle are always replaced (whether blank or not).
+
+For Option 2 `f`, if you want to _reduce_ the width of an existing filled rectangle, use a prefix to specify it numerically.
+
+>[!NOTE]
+>When filling rectangle, the _height_ of the rectangle marked for filling is significant.  It indicates to `speedrect` that the fill box can safely extend that far down without disturbing other rows of data.  It's normal to mark the full range down to the next row.  If more rows are needed, `speedrect` will add blank lines.
+
+
 
 ## Commands
 
