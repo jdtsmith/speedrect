@@ -86,8 +86,8 @@ You don't have to be in the same `rectangle-mark-mode` session you sent data fro
 
 There are several ways to "fill" content within a rectangle:
 
-1. `f`: if the marked rectangle is entirely blank, use the last yanked rectangle's contents, filled up to the width of the marked rectangle.
-1. `f`: if the marked rectangle is _not_ blank, use its contents, filling to the width of the rectangle.
+1. `f`: if the marked rectangle is entirely blank, use the last killed rectangle's contents, filling to the width of the marked rectangle.
+1. `f`: if the marked rectangle is _not_ blank, use _its_ contents, filling to the width of the rectangle.
 1. `C-u f` or `M-N f` (where `N` is the number of chars wide): use the contents of either the last killed rectangle or the currently marked rectangle to fill to the specified width.
 1. `F`: same as above, except use the currently copied text on the kill ring as the text to fill.  
 
