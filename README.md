@@ -6,7 +6,7 @@
 `SpeedRect` is a small Emacs package that automatically provides convenient "modal" single-key bindings and other tools while in `rectangle-mark-mode` (`C-x SPC`, or `C-M-mouse1` drag, by default).
 
 ## Features
-<img width="625" alt="image" align="right" src="https://github.com/user-attachments/assets/adcea492-cd51-4123-b5aa-7f0f31eb1029" /> 
+<img width="500" alt="image" align="right" src="https://github.com/user-attachments/assets/adcea492-cd51-4123-b5aa-7f0f31eb1029" /> 
 
 - Single-key [bindings](#commands) for all the basic rectangle functions: open, insert string, kill, delete, clear, copy, yank.
 - Restarts by default, so you can continue actions on the current rectangle.
