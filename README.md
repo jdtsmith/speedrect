@@ -9,17 +9,19 @@
 <img width="500" alt="image" align="right" src="https://github.com/user-attachments/assets/adcea492-cd51-4123-b5aa-7f0f31eb1029" /> 
 
 - Single-key [bindings](#commands) for all the basic rectangle functions: open, insert string, kill, delete, clear, copy, yank.
-- Restarts by default, so you can continue actions on the current rectangle.
-- Ability to restore the last rectangle's position, which gets auto-saved.
-- Lots of additional rectangle [commands](#commands): e.g. delete the _unmarked columns_ in affected rows.
-- Change your mind and start a new rectangle from point.
-- Delete whitespace from the rectangle boundaries to left or right-align the data.
+- The rectangle remains selected after most commands, so you can easily _chain_ actions together (kill this column, yank it over there, send to calc, do some math, yank the results back, ...).
+- Easily restore in a future session the last marked rectangle's position, which gets auto-saved.
+- Many additional and powerful rectangle [commands](#commands) beyond those found on `C-x r *`.
+- Change your mind and start a new rectangle from point without leaving `rectangle-mark-mode`.
 - Column shift: slide the marked rectangle position left or right, 1 (hold shift) or 5 (meta-shift) columns at a time (or any number of columns, with a numerical prefix).
-- Quickly enter numeric columns.
-- Increment/decrement selected numbers.
-- Two-way interaction with `calc`: send sums or tables of data into `calc`, and yank processed matrix data back into the rectangle from the top of `calc`'s stack. `Calc` can do _anything_.
-- Quickly add [multiple cursors](https://github.com/magnars/multiple-cursors.el) on each line of the current rectangle, and return to the marked rectangle when finished.
-- Flexibly wrap text within a rectangle.
+- Delete whitespace from the rectangle boundaries to left or right-align columns.
+- Quickly enter numeric columns with custom formatting and starting value.
+- Increment/decrement selected columns of numbers by any amount.
+- Two-way interaction with `calc` (which can do _anything_):
+   - send row/column sums or tables of data into `calc`
+   - yank processed matrix data atop the current rectangle from `calc`'s stack.
+- Quickly add [multiple cursors](https://github.com/magnars/multiple-cursors.el) on each line of the current rectangle, and return to your marked rectangle when it finishes.
+- Flexibly wrap text within rectangles.
 - A useful help page (`?`). 
 
 ## Demo
